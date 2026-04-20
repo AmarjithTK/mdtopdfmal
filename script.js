@@ -19,6 +19,12 @@ document.addEventListener('DOMContentLoaded', () => {
 * പോയിന്റ് 1
 * പോയിന്റ് 2
 
+---
+
+> "ഇതൊരു ഉദ്ധരണിയാണ്." (This is a quote.)
+
+## സബ് ഹെഡിംഗ്
+
 ഈ ഭാഗം **ബോൾഡ്** ആണ്, ഇത് *ഇറ്റാലിക്സ്* ആണ്.`;
 
     // Render logic
@@ -37,8 +43,13 @@ document.addEventListener('DOMContentLoaded', () => {
     // Theme selector change listener
     if (themeSelector) {
         themeSelector.addEventListener('change', (e) => {
-            // Remove all themes
-            previewContent.classList.remove('prose-dense_minimal', 'prose-dense_blue', 'prose-dense_classic');
+            // Remove all themes starting with prose-dense_
+            const classes = Array.from(previewContent.classList);
+            classes.forEach(c => {
+                if (c.startsWith('prose-dense_')) {
+                    previewContent.classList.remove(c);
+                }
+            });
             // Add new theme
             previewContent.classList.add(e.target.value);
         });

@@ -1,0 +1,35 @@
+/* Tailwind CSS Print Fallbacks */
+
+@media print {
+  @page {
+    size: A4;
+    margin: 8mm; 
+  }
+  
+  #preview-content {
+    max-width: 100% !important;
+    width: 100% !important;
+    color: black !important;
+  }
+
+  /* Reset all aggressive breaking rules from browser/tailwind defaults */
+  #preview-content * {
+    page-break-inside: auto !important;
+    break-inside: auto !important;
+  }
+
+  /* Typography flow protection */
+  h1, h2, h3, h4, h5, h6 {
+    page-break-after: avoid !important;
+    break-after: avoid !important;
+    /* Heads shouldn't split anyway */
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+  }
+  
+  /* Prevent only structural atoms from being sliced in half horizontally */
+  img, tr, pre, code {
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+  }
+}

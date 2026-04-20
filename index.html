@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Markdown to PDF (Malayalam) - Tailwind</title>
+  
+  <!-- Noto Sans and Serif Malayalam Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Malayalam:wght@400;500;600;700&family=Noto+Serif+Malayalam:wght@400;500;600;700&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="style.css">
+  
+  <!-- Markdown-It library -->
+  <script src="https://cdn.jsdelivr.net/npm/markdown-it@13.0.1/dist/markdown-it.min.js"></script>
+
+  <!-- Tailwind CSS & Typography Plugin -->
+  <script src="https://cdn.tailwindcss.com?plugins=typography"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          typography: {
+            dense_minimal: {
+              css: {
+                '--tw-prose-body': '#111827',
+                '--tw-prose-headings': '#000000',
+                fontFamily: '"Noto Sans Malayalam", sans-serif',
+                textAlign: 'left',
+                fontSize: '13px', 
+                lineHeight: '1.45',
+                h1: { marginBottom: '0.4em', marginTop: '1.2em', fontSize: '1.5em', borderBottom: '1px solid #e5e7eb', paddingBottom: '0.25em', fontWeight: '700', color: '#111827' },
+                h2: { marginBottom: '0.4em', marginTop: '1em', fontSize: '1.2em', fontWeight: '600', color: '#374151' },
+                h3: { marginBottom: '0.3em', marginTop: '0.8em', fontSize: '1.1em', fontWeight: '600', color: '#4b5563' },
+                p: { marginTop: '0.4em', marginBottom: '0.4em' },
+                ul: { marginTop: '0.3em', marginBottom: '0.3em', paddingLeft: '1.25em' },
+                ol: { marginTop: '0.3em', marginBottom: '0.3em', paddingLeft: '1.25em' },
+                li: { marginTop: '0.1em', marginBottom: '0.1em' },
+                'ul > li p': { marginTop: '0.1em', marginBottom: '0.1em' },
+                'ol > li p': { marginTop: '0.1em', marginBottom: '0.1em' },
+                table: { fontSize: '0.95em', width: '100%', marginTop: '1em', marginBottom: '1em' },
+                thead: { borderBottomWidth: '1px', borderBottomColor: '#e5e7eb' },
+                'thead th': { padding: '4px 8px', fontWeight: '600', color: '#111827' },
+                'tbody td': { padding: '4px 8px', borderBottomWidth: '1px', borderBottomColor: '#f3f4f6' },
+                pre: { padding: '0.5em', marginTop: '0.5em', marginBottom: '0.5em', fontSize: '0.85em', background: '#f3f4f6', color: '#1f2937' },
+                code: { fontWeight: '500', background: '#f3f4f6', padding: '0.1em 0.3em', borderRadius: '0.125rem' },
+                'code::before': { content: 'none' }, 'code::after': { content: 'none' },
+              }
+            },
+            dense_blue: {
+              css: {
+                '--tw-prose-body': '#1e293b',
+                '--tw-prose-headings': '#1e3a8a',
+                fontFamily: '"Noto Sans Malayalam", sans-serif',
+                textAlign: 'left',
+                fontSize: '13px', 
+                lineHeight: '1.45',
+                h1: { marginBottom: '0.4em', marginTop: '1.2em', fontSize: '1.5em', borderBottom: '2px solid #bfdbfe', paddingBottom: '0.25em', fontWeight: '700', color: '#1e3a8a' },
+                h2: { marginBottom: '0.4em', marginTop: '1em', fontSize: '1.2em', fontWeight: '600', color: '#2563eb' },
+                h3: { marginBottom: '0.3em', marginTop: '0.8em', fontSize: '1.1em', fontWeight: '600', color: '#3b82f6' },
+                p: { marginTop: '0.4em', marginBottom: '0.4em' },
+                ul: { marginTop: '0.3em', marginBottom: '0.3em', paddingLeft: '1.25em' },
+                ol: { marginTop: '0.3em', marginBottom: '0.3em', paddingLeft: '1.25em' },
+                li: { marginTop: '0.1em', marginBottom: '0.1em' },
+                'ul > li p': { marginTop: '0.1em', marginBottom: '0.1em' },
+                'ol > li p': { marginTop: '0.1em', marginBottom: '0.1em' },
+                table: { fontSize: '0.95em', width: '100%', marginTop: '1em', marginBottom: '1em' },
+                thead: { borderBottomWidth: '2px', borderBottomColor: '#bfdbfe', backgroundColor: '#eff6ff' },
+                'thead th': { padding: '4px 8px', fontWeight: '600', color: '#1e3a8a' },
+                'tbody td': { padding: '4px 8px', borderBottomWidth: '1px', borderBottomColor: '#dbeafe' },
+                pre: { padding: '0.5em', marginTop: '0.5em', marginBottom: '0.5em', fontSize: '0.85em', background: '#eff6ff', color: '#1e3a8a', border: '1px solid #bfdbfe' },
+                code: { fontWeight: '600', color: '#2563eb', background: '#eff6ff', padding: '0.1em 0.3em', borderRadius: '0.125rem' },
+                'code::before': { content: 'none' }, 'code::after': { content: 'none' },
+              }
+            },
+            dense_classic: {
+              css: {
+                '--tw-prose-body': '#27272a',
+                '--tw-prose-headings': '#7f1d1d',
+                fontFamily: '"Noto Serif Malayalam", serif',
+                textAlign: 'justify',
+                fontSize: '13px', 
+                lineHeight: '1.45',
+                h1: { marginBottom: '0.4em', marginTop: '1.2em', fontSize: '1.5em', borderBottom: '1px dashed #fca5a5', paddingBottom: '0.25em', fontWeight: '700', color: '#7f1d1d' },
+                h2: { marginBottom: '0.4em', marginTop: '1em', fontSize: '1.2em', fontWeight: '600', color: '#991b1b' },
+                h3: { marginBottom: '0.3em', marginTop: '0.8em', fontSize: '1.1em', fontWeight: '600', color: '#b91c1c' },
+                p: { marginTop: '0.4em', marginBottom: '0.4em' },
+                ul: { marginTop: '0.3em', marginBottom: '0.3em', paddingLeft: '1.25em' },
+                ol: { marginTop: '0.3em', marginBottom: '0.3em', paddingLeft: '1.25em' },
+                li: { marginTop: '0.1em', marginBottom: '0.1em' },
+                'ul > li p': { marginTop: '0.1em', marginBottom: '0.1em' },
+                'ol > li p': { marginTop: '0.1em', marginBottom: '0.1em' },
+                table: { fontSize: '0.95em', width: '100%', marginTop: '1em', marginBottom: '1em' },
+                thead: { borderBottomWidth: '2px', borderBottomColor: '#7f1d1d' },
+                'thead th': { padding: '4px 8px', fontWeight: '600', color: '#7f1d1d' },
+                'tbody td': { padding: '4px 8px', borderBottomWidth: '1px', borderBottomColor: '#fee2e2' },
+                pre: { padding: '0.5em', marginTop: '0.5em', marginBottom: '0.5em', fontSize: '0.85em', background: '#fef2f2', border: '1px solid #fecaca' },
+                code: { fontWeight: '600', color: '#991b1b', background: '#fef2f2', padding: '0.1em 0.3em', borderRadius: '0.125rem' },
+                'code::before': { content: 'none' }, 'code::after': { content: 'none' },
+              }
+            }
+          }
+        }
+      }
+    }
+  </script>
+</head>
+<body class="bg-gray-50 h-screen overflow-hidden text-gray-800 font-sans print:overflow-visible print:bg-white print:h-auto">
+  
+  <div class="flex h-full w-full print:block print:h-auto print:w-auto">
+    <!-- Sidebar -->
+    <aside class="w-64 bg-white border-r border-gray-200 flex flex-col p-6 print:hidden shadow-sm z-20">
+      <h2 class="text-xs font-bold text-gray-500 uppercase tracking-widest mb-6">PDF Export Settings</h2>
+      
+      <div class="mb-6 flex flex-col gap-2">
+        <label class="text-xs font-semibold text-gray-600 block mb-1">Design Theme:</label>
+        <select id="theme-selector" class="w-full bg-gray-50 border border-gray-200 text-gray-700 rounded p-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent cursor-pointer">
+          <option value="prose-dense_minimal">Minimalist (Default)</option>
+          <option value="prose-dense_blue">Blue Accent (Corporate)</option>
+          <option value="prose-dense_classic">Classic Red (Serif)</option>
+        </select>
+      </div>
+
+      <div class="mb-6 flex flex-col gap-3">
+        <div class="bg-blue-50 text-blue-800 text-xs p-3 rounded-lg border border-blue-100 leading-relaxed shadow-sm">
+          <strong>Pro-Tip:</strong> In your browser print dialog, uncheck <em>"Headers and footers"</em> to remove dates & URLs for a perfectly clean PDF.
+        </div>
+      </div>
+      
+      <div class="mt-auto">
+        <button id="export-btn" class="w-full bg-slate-800 hover:bg-slate-900 text-white font-medium py-2.5 px-4 rounded-lg transition-colors shadow flex items-center justify-center gap-2 text-sm">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path></svg>
+          Download PDF
+        </button>
+      </div>
+    </aside>
+
+    <!-- Markdown Editor -->
+    <div class="flex-1 bg-white border-r border-gray-200 print:hidden flex flex-col min-w-0 z-10 shadow-[4px_0_10px_-5px_rgba(0,0,0,0.05)]">
+      <div class="flex items-center justify-between border-b border-gray-200 px-5 py-3 bg-gray-50/80">
+        <span class="text-xs font-bold text-gray-500 uppercase tracking-widest">📝 Editor</span>
+      </div>
+      <textarea id="markdown-input" class="flex-1 w-full p-6 resize-none focus:outline-none font-mono text-sm text-gray-600 leading-relaxed bg-[#fdfdfd]" placeholder="Type your Markdown here (മലയാളം)..."></textarea>
+    </div>
+
+    <!-- Live Preview -->
+    <div class="flex-[1.5] overflow-y-auto bg-gray-100/60 min-w-0 print-preview-bg print:overflow-visible print:bg-transparent print:w-full print:block print:flex-none">
+      <div class="flex items-center justify-between border-b border-gray-200 px-5 py-3 bg-white sticky top-0 z-10 shadow-[0_1px_2px_rgba(0,0,0,0.02)] print:hidden">
+        <span class="text-xs font-bold text-gray-500 uppercase tracking-widest">📄 A4 Preview</span>
+      </div>
+      
+      <!-- The A4 shaped container -->
+      <div class="p-6 md:p-8 mx-auto my-6 max-w-[210mm] min-h-[297mm] bg-white shadow-md print-reset-container border border-gray-200 print:shadow-none print:border-none print:m-0 print:p-0 print:max-w-full">
+        <div id="preview-content" class="prose prose-dense_minimal max-w-none"></div>
+      </div>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>

@@ -369,14 +369,14 @@
     }
   </script>
 </head>
-<body class="bg-gray-50 h-screen overflow-hidden text-gray-800 font-sans print:overflow-visible print:bg-white print:h-auto">
+<body class="bg-gray-50 h-auto overflow-auto md:h-screen md:overflow-hidden text-gray-800 font-sans print:overflow-visible print:bg-white print:h-auto">
   
-  <div class="flex h-full w-full print:block print:h-auto print:w-auto">
+  <div class="flex flex-col md:flex-row min-h-screen md:min-h-0 md:h-full w-full print:block print:h-auto print:w-auto">
     <!-- Sidebar -->
-    <aside class="w-64 bg-white border-r border-gray-200 flex flex-col p-6 print:hidden shadow-sm z-20">
-      <h2 class="text-xs font-bold text-gray-500 uppercase tracking-widest mb-6">PDF Export Settings</h2>
+    <aside class="w-full md:w-64 flex-none bg-white border-b md:border-b-0 md:border-r border-gray-200 flex flex-col p-4 md:p-6 print:hidden shadow-sm z-20">
+      <h2 class="text-xs font-bold text-gray-500 uppercase tracking-widest mb-4 md:mb-6">PDF Export Settings</h2>
       
-      <div class="mb-6 flex flex-col gap-2">
+      <div class="mb-4 md:mb-6 flex flex-col gap-2">
         <label class="text-xs font-semibold text-gray-600 block mb-1">Design Theme:</label>
         <select id="theme-selector" class="w-full bg-gray-50 border border-gray-200 text-gray-700 rounded p-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent cursor-pointer">
           <option value="prose-dense_minimal">Minimalist (Default)</option>
@@ -391,13 +391,13 @@
         </select>
       </div>
 
-      <div class="mb-6 flex flex-col gap-3">
+      <div class="mb-4 md:mb-6 flex flex-col gap-3 hidden md:flex">
         <div class="bg-blue-50 text-blue-800 text-xs p-3 rounded-lg border border-blue-100 leading-relaxed shadow-sm">
           <strong>Pro-Tip:</strong> In your browser print dialog, uncheck <em>"Headers and footers"</em> to remove dates & URLs for a perfectly clean PDF.
         </div>
       </div>
       
-      <div class="mt-auto">
+      <div class="mt-4 md:mt-auto">
         <button id="export-btn" class="w-full bg-slate-800 hover:bg-slate-900 text-white font-medium py-2.5 px-4 rounded-lg transition-colors shadow flex items-center justify-center gap-2 text-sm">
           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path></svg>
           Download PDF
@@ -406,21 +406,21 @@
     </aside>
 
     <!-- Markdown Editor -->
-    <div class="flex-1 bg-white border-r border-gray-200 print:hidden flex flex-col min-w-0 z-10 shadow-[4px_0_10px_-5px_rgba(0,0,0,0.05)]">
-      <div class="flex items-center justify-between border-b border-gray-200 px-5 py-3 bg-gray-50/80">
+    <div class="w-full md:w-auto md:flex-1 h-64 md:h-auto bg-white border-b md:border-b-0 md:border-r border-gray-200 print:hidden flex flex-col min-w-0 z-10 shadow-[4px_0_10px_-5px_rgba(0,0,0,0.05)]">
+      <div class="flex items-center justify-between border-b border-gray-200 px-4 md:px-5 py-2.5 md:py-3 bg-gray-50/80">
         <span class="text-xs font-bold text-gray-500 uppercase tracking-widest">📝 Editor</span>
       </div>
-      <textarea id="markdown-input" class="flex-1 w-full p-6 resize-none focus:outline-none font-mono text-sm text-gray-600 leading-relaxed bg-[#fdfdfd]" placeholder="Type your Markdown here (മലയാളം)..."></textarea>
+      <textarea id="markdown-input" class="flex-1 w-full p-4 md:p-6 resize-none focus:outline-none font-mono text-sm text-gray-600 leading-relaxed bg-[#fdfdfd]" placeholder="Type your Markdown here (മലയാളം)..."></textarea>
     </div>
 
     <!-- Live Preview -->
-    <div class="flex-[1.5] overflow-y-auto bg-gray-100/60 min-w-0 print-preview-bg print:overflow-visible print:bg-transparent print:w-full print:block print:flex-none">
-      <div class="flex items-center justify-between border-b border-gray-200 px-5 py-3 bg-white sticky top-0 z-10 shadow-[0_1px_2px_rgba(0,0,0,0.02)] print:hidden">
+    <div class="w-full md:w-auto md:flex-[1.5] min-h-[500px] md:min-h-0 overflow-y-auto bg-gray-100/60 min-w-0 print-preview-bg print:overflow-visible print:bg-transparent print:w-full print:block print:flex-none">
+      <div class="flex items-center justify-between border-b border-gray-200 px-4 md:px-5 py-2.5 md:py-3 bg-white sticky top-0 z-10 shadow-[0_1px_2px_rgba(0,0,0,0.02)] print:hidden">
         <span class="text-xs font-bold text-gray-500 uppercase tracking-widest">📄 A4 Preview</span>
       </div>
       
       <!-- The A4 shaped container -->
-      <div class="p-6 md:p-8 mx-auto my-6 max-w-[210mm] min-h-[297mm] bg-white shadow-md print-reset-container border border-gray-200 print:shadow-none print:border-none print:m-0 print:p-0 print:max-w-full">
+      <div class="p-4 md:p-8 mx-auto my-4 md:my-6 max-w-full md:max-w-[210mm] min-h-[297mm] bg-white shadow-md print-reset-container border border-gray-200 print:shadow-none print:border-none print:m-0 print:p-0 print:max-w-full">
         <div id="preview-content" class="prose prose-dense_minimal max-w-none"></div>
       </div>
     </div>

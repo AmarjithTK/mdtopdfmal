@@ -369,9 +369,23 @@
     }
   </script>
 </head>
-<body class="bg-gray-50 h-auto overflow-auto md:h-screen md:overflow-hidden text-gray-800 font-sans print:overflow-visible print:bg-white print:h-auto">
+<body class="bg-gray-50 flex flex-col h-auto overflow-auto md:h-screen md:overflow-hidden text-gray-800 font-sans print:overflow-visible print:bg-white print:h-auto">
   
-  <div class="flex flex-col md:flex-row min-h-screen md:min-h-0 md:h-full w-full print:block print:h-auto print:w-auto">
+  <!-- Header with Explanation -->
+  <header class="bg-white border-b border-gray-200 px-4 py-4 md:px-6 md:py-4 flex-none print:hidden z-30 shadow-[0_2px_4px_rgba(0,0,0,0.02)]">
+    <div class="max-w-6xl mx-auto md:mx-0">
+      <h1 class="text-xl md:text-2xl font-extrabold text-slate-800 tracking-tight flex items-center gap-2">
+        <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+        Malayalam PDF Generator
+      </h1>
+      <p class="text-sm text-gray-500 mt-2 max-w-3xl leading-relaxed">
+        <strong>Usage:</strong> Type your markdown on the left, and see it rendered immediately. Select a theme, then click "Download PDF". <br class="hidden md:block"/>
+        <strong>Features:</strong> Perfect Malayalam font rendering (Noto Sans/Serif), rich Tailwind themes, continuous page breaks handling, and an exact A4 page projection inside your browser. Focus strictly on content.
+      </p>
+    </div>
+  </header>
+
+  <main class="flex-1 flex flex-col md:flex-row min-h-0 w-full print:block print:h-auto print:w-auto relative">
     <!-- Sidebar -->
     <aside class="w-full md:w-64 flex-none bg-white border-b md:border-b-0 md:border-r border-gray-200 flex flex-col p-4 md:p-6 print:hidden shadow-sm z-20">
       <h2 class="text-xs font-bold text-gray-500 uppercase tracking-widest mb-4 md:mb-6">PDF Export Settings</h2>
@@ -402,9 +416,6 @@
           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path></svg>
           Download PDF
         </button>
-        <div class="text-center text-xs text-gray-400 mt-2">
-          Made by <a href="https://atherpulse.in" target="_blank" rel="noopener noreferrer" class="font-semibold text-gray-500 hover:text-blue-600 transition-colors">atherPulse Technologies</a>
-        </div>
       </div>
     </aside>
 
@@ -427,7 +438,14 @@
         <div id="preview-content" class="prose prose-dense_minimal max-w-none"></div>
       </div>
     </div>
-  </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="bg-gray-800 text-white flex-none py-3 px-6 z-30 print:hidden text-center shadow-[0_-2px_4px_rgba(0,0,0,0.05)]">
+    <div class="text-xs text-gray-300 font-medium">
+      Made by <a href="https://atherpulse.in" target="_blank" rel="noopener noreferrer" class="text-white hover:text-blue-300 transition-colors font-semibold tracking-wide">Atherpulse Technologies</a> &copy; 2026
+    </div>
+  </footer>
 
   <script src="script.js"></script>
 </body>

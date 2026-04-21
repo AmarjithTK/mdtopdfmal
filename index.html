@@ -3,12 +3,12 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Markdown to PDF (Malayalam) - Tailwind</title>
+  <title>ChatGPT to Pretty PDF</title>
   
-  <!-- Noto Sans and Serif Malayalam Fonts -->
+  <!-- Google Fonts: English (Rubik, Raleway, Inter, Lora) + Malayalam (Noto) -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Malayalam:wght@400;500;600;700&family=Noto+Serif+Malayalam:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Noto+Sans+Malayalam:wght@400;500;600;700&family=Noto+Serif+Malayalam:wght@400;500;600;700&family=Raleway:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Rubik:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&display=swap" rel="stylesheet">
   
   <link rel="icon" href="favicon.ico">
   <link rel="stylesheet" href="style.css">
@@ -325,6 +325,153 @@
                 strong: { color: '#881337', fontWeight: '800' },
               }
             },
+            dense_inter: {
+    css: {
+      '--tw-prose-body': '#111827',
+      '--tw-prose-headings': '#000000',
+      '--tw-prose-bullets': '#6b7280',
+      '--tw-prose-hr': '#d1d5db',
+      '--tw-prose-quotes': '#374151',
+      '--tw-prose-quote-borders': '#3b82f6',
+      '--tw-prose-bold': '#000000',
+      fontFamily: '"Inter", sans-serif',
+      textAlign: 'left',
+      fontSize: '13px', 
+      lineHeight: '1.45',
+      h1: { marginBottom: '0.4em', marginTop: '1.2em', fontSize: '1.6em', borderBottom: '2px solid #3b82f6', paddingBottom: '0.25em', fontWeight: '800', color: '#111827' },
+      h2: { marginBottom: '0.4em', marginTop: '1em', fontSize: '1.3em', fontWeight: '700', color: '#1f2937' },
+      h3: { marginBottom: '0.3em', marginTop: '0.8em', fontSize: '1.1em', fontWeight: '600', color: '#374151' },
+      p: { marginTop: '0.4em', marginBottom: '0.4em' },
+      ul: { marginTop: '0.3em', marginBottom: '0.3em', paddingLeft: '1.25em' },
+      ol: { marginTop: '0.3em', marginBottom: '0.3em', paddingLeft: '1.25em' },
+      li: { marginTop: '0.1em', marginBottom: '0.1em' },
+      'ul > li p': { marginTop: '0.1em', marginBottom: '0.1em' },
+      'ol > li p': { marginTop: '0.1em', marginBottom: '0.1em' },
+      hr: { marginTop: '1em', marginBottom: '1em', borderTopWidth: '1px', borderColor: '#d1d5db' },
+      'ul > li::marker': { color: '#3b82f6' },
+      'ol > li::marker': { color: '#2563eb', fontWeight: '600' },
+      blockquote: { borderLeftWidth: '4px', borderLeftColor: '#3b82f6', color: '#4b5563', fontStyle: 'italic', paddingLeft: '1em', marginTop: '0.5em', marginBottom: '0.5em', background: '#eff6ff', paddingTop: '0.5em', paddingBottom: '0.5em', borderRadius: '0 0.25rem 0.25rem 0' },
+      table: { fontSize: '0.95em', width: '100%', marginTop: '1em', marginBottom: '1em' },
+      thead: { borderBottomWidth: '2px', borderBottomColor: '#d1d5db' },
+      'thead th': { padding: '6px 8px', fontWeight: '600', color: '#111827', textAlign: 'left' },
+      'tbody td': { padding: '4px 8px', borderBottomWidth: '1px', borderBottomColor: '#e5e7eb' },
+      pre: { padding: '0.75em', marginTop: '0.5em', marginBottom: '0.5em', fontSize: '0.85em', background: '#1f2937', color: '#f3f4f6', borderRadius: '0.375rem' },
+      code: { fontWeight: '500', background: '#eff6ff', color: '#1e40af', padding: '0.1em 0.3em', borderRadius: '0.125rem' },
+      'code::before': { content: 'none' }, 'code::after': { content: 'none' },
+      strong: { color: '#000000', fontWeight: '700' },
+    }
+  },
+  dense_lora: {
+    css: {
+      '--tw-prose-body': '#27272a',
+      '--tw-prose-headings': '#18181b',
+      '--tw-prose-bullets': '#71717a',
+      '--tw-prose-hr': '#e4e4e7',
+      '--tw-prose-quotes': '#52525b',
+      '--tw-prose-quote-borders': '#52525b',
+      '--tw-prose-bold': '#18181b',
+      fontFamily: '"Lora", serif',
+      textAlign: 'left',
+      fontSize: '13.5px', 
+      lineHeight: '1.5',
+      letterSpacing: '0.01em',
+      h1: { marginBottom: '0.4em', marginTop: '1.2em', fontSize: '1.6em', borderBottom: '1px solid #d4d4d8', paddingBottom: '0.25em', fontWeight: '700', color: '#18181b', fontStyle: 'italic' },
+      h2: { marginBottom: '0.4em', marginTop: '1em', fontSize: '1.3em', fontWeight: '600', color: '#27272a' },
+      h3: { marginBottom: '0.3em', marginTop: '0.8em', fontSize: '1.1em', fontWeight: '600', color: '#3f3f46' },
+      p: { marginTop: '0.4em', marginBottom: '0.4em' },
+      ul: { marginTop: '0.3em', marginBottom: '0.3em', paddingLeft: '1.25em' },
+      ol: { marginTop: '0.3em', marginBottom: '0.3em', paddingLeft: '1.25em' },
+      li: { marginTop: '0.15em', marginBottom: '0.15em' },
+      'ul > li p': { marginTop: '0.1em', marginBottom: '0.1em' },
+      'ol > li p': { marginTop: '0.1em', marginBottom: '0.1em' },
+      hr: { marginTop: '1.2em', marginBottom: '1.2em', borderTopWidth: '1px', borderColor: '#e4e4e7' },
+      'ul > li::marker': { color: '#71717a' },
+      'ol > li::marker': { color: '#52525b', fontWeight: '600' },
+      blockquote: { borderLeftWidth: '3px', borderLeftColor: '#71717a', color: '#52525b', fontStyle: 'italic', paddingLeft: '1.2em', marginTop: '0.8em', marginBottom: '0.8em', fontSize: '1.05em' },
+      table: { fontSize: '0.95em', width: '100%', marginTop: '1em', marginBottom: '1em' },
+      thead: { borderBottomWidth: '1px', borderBottomColor: '#d4d4d8' },
+      'thead th': { padding: '4px 8px', fontWeight: '600', color: '#18181b', textAlign: 'left' },
+      'tbody td': { padding: '4px 8px', borderBottomWidth: '1px', borderBottomColor: '#f4f4f5' },
+      pre: { padding: '0.5em', marginTop: '0.5em', marginBottom: '0.5em', fontSize: '0.85em', background: '#f4f4f5', color: '#27272a', fontFamily: 'monospace', borderRadius: '0.25rem', border: '1px solid #e4e4e7' },
+      code: { fontWeight: '500', background: '#f4f4f5', padding: '0.1em 0.3em', borderRadius: '0.125rem', fontFamily: 'monospace', fontSize: '0.9em' },
+      'code::before': { content: 'none' }, 'code::after': { content: 'none' },
+      strong: { color: '#18181b', fontWeight: '700' },
+    }
+  },
+  dense_raleway: {
+    css: {
+      '--tw-prose-body': '#1e293b',
+      '--tw-prose-headings': '#0f172a',
+      '--tw-prose-bullets': '#94a3b8',
+      '--tw-prose-hr': '#cbd5e1',
+      '--tw-prose-quotes': '#475569',
+      '--tw-prose-quote-borders': '#10b981',
+      '--tw-prose-bold': '#0f172a',
+      fontFamily: '"Raleway", sans-serif',
+      textAlign: 'left',
+      fontSize: '13px', 
+      lineHeight: '1.5',
+      h1: { marginBottom: '0.4em', marginTop: '1.2em', fontSize: '1.7em', paddingBottom: '0.25em', fontWeight: '800', color: '#0f172a', letterSpacing: '-0.02em' },
+      h2: { marginBottom: '0.4em', marginTop: '1em', fontSize: '1.4em', fontWeight: '700', color: '#1e293b', letterSpacing: '-0.01em' },
+      h3: { marginBottom: '0.3em', marginTop: '0.8em', fontSize: '1.2em', fontWeight: '600', color: '#334155' },
+      p: { marginTop: '0.4em', marginBottom: '0.4em' },
+      ul: { marginTop: '0.3em', marginBottom: '0.3em', paddingLeft: '1.25em' },
+      ol: { marginTop: '0.3em', marginBottom: '0.3em', paddingLeft: '1.25em' },
+      li: { marginTop: '0.1em', marginBottom: '0.1em' },
+      'ul > li p': { marginTop: '0.1em', marginBottom: '0.1em' },
+      'ol > li p': { marginTop: '0.1em', marginBottom: '0.1em' },
+      hr: { marginTop: '1em', marginBottom: '1em', borderTopWidth: '1px', borderColor: '#cbd5e1' },
+      'ul > li::marker': { color: '#10b981' },
+      'ol > li::marker': { color: '#059669', fontWeight: '600' },
+      blockquote: { borderLeftWidth: '0', borderLeftColor: 'transparent', color: '#334155', fontStyle: 'italic', paddingLeft: '1.5em', marginTop: '0.5em', marginBottom: '0.5em', position: 'relative' },
+      'blockquote::before': { content: '"\\201C"', position: 'absolute', left: '0', top: '-0.2em', color: '#10b981', fontSize: '2em', fontWeight: '800', opacity: '0.4' },
+      table: { fontSize: '0.95em', width: '100%', marginTop: '1em', marginBottom: '1em' },
+      thead: { borderBottomWidth: '1px', borderBottomColor: '#94a3b8' },
+      'thead th': { padding: '4px 8px', fontWeight: '600', color: '#0f172a', textTransform: 'uppercase', letterSpacing: '0.05em', fontSize: '0.85em' },
+      'tbody td': { padding: '4px 8px', borderBottomWidth: '1px', borderBottomColor: '#e2e8f0' },
+      pre: { padding: '0.5em', marginTop: '0.5em', marginBottom: '0.5em', fontSize: '0.85em', background: '#f8fafc', color: '#334155', borderRadius: '0.25rem', border: '1px solid #cbd5e1' },
+      code: { fontWeight: '600', background: '#ecfdf5', color: '#065f46', padding: '0.1em 0.3em', borderRadius: '0.125rem' },
+      'code::before': { content: 'none' }, 'code::after': { content: 'none' },
+      strong: { color: '#0f172a', fontWeight: '700' },
+    }
+  },
+  dense_rubik: {
+    css: {
+      '--tw-prose-body': '#374151',
+      '--tw-prose-headings': '#111827',
+      '--tw-prose-bullets': '#9ca3af',
+      '--tw-prose-hr': '#d1d5db',
+      '--tw-prose-quotes': '#4b5563',
+      '--tw-prose-quote-borders': '#f59e0b',
+      '--tw-prose-bold': '#111827',
+      fontFamily: '"Rubik", sans-serif',
+      textAlign: 'left',
+      fontSize: '13px', 
+      lineHeight: '1.45',
+      h1: { marginBottom: '0.4em', marginTop: '1.2em', fontSize: '1.5em', borderBottom: '1px solid #e5e7eb', paddingBottom: '0.25em', fontWeight: '600', color: '#111827' },
+      h2: { marginBottom: '0.4em', marginTop: '1em', fontSize: '1.25em', fontWeight: '500', color: '#1f2937' },
+      h3: { marginBottom: '0.3em', marginTop: '0.8em', fontSize: '1.1em', fontWeight: '500', color: '#374151' },
+      p: { marginTop: '0.4em', marginBottom: '0.4em' },
+      ul: { marginTop: '0.3em', marginBottom: '0.3em', paddingLeft: '1.25em' },
+      ol: { marginTop: '0.3em', marginBottom: '0.3em', paddingLeft: '1.25em' },
+      li: { marginTop: '0.1em', marginBottom: '0.1em' },
+      'ul > li p': { marginTop: '0.1em', marginBottom: '0.1em' },
+      'ol > li p': { marginTop: '0.1em', marginBottom: '0.1em' },
+      hr: { marginTop: '1em', marginBottom: '1em', borderTopWidth: '1px', borderColor: '#d1d5db' },
+      'ul > li::marker': { color: '#f59e0b' },
+      'ol > li::marker': { color: '#d97706', fontWeight: '600' },
+      blockquote: { borderLeftWidth: '3px', borderLeftColor: '#f59e0b', background: '#fffbeb', color: '#4b5563', fontStyle: 'italic', paddingLeft: '1em', paddingRight: '1em', marginTop: '0.5em', marginBottom: '0.5em', paddingTop: '0.5em', paddingBottom: '0.5em', borderRadius: '0.375rem' },
+      table: { fontSize: '0.95em', width: '100%', marginTop: '1em', marginBottom: '1em', border: '1px solid #e5e7eb', borderRadius: '0.375rem', overflow: 'hidden' },
+      thead: { background: '#f9fafb', borderBottomWidth: '1px', borderBottomColor: '#e5e7eb' },
+      'thead th': { padding: '6px 8px', fontWeight: '500', color: '#374151', textAlign: 'left' },
+      'tbody td': { padding: '6px 8px', borderBottomWidth: '1px', borderBottomColor: '#f3f4f6' },
+      pre: { padding: '0.5em', marginTop: '0.5em', marginBottom: '0.5em', fontSize: '0.85em', background: '#1f2937', color: '#e5e7eb', borderRadius: '0.375rem' },
+      code: { fontWeight: '500', background: '#fef3c7', color: '#92400e', padding: '0.1em 0.3em', borderRadius: '0.125rem' },
+      'code::before': { content: 'none' }, 'code::after': { content: 'none' },
+      strong: { color: '#111827', fontWeight: '600' },
+    }
+  }
+,
             dense_cyber: {
               css: {
                 '--tw-prose-body': '#111827', /* Gray 900 */
@@ -379,9 +526,9 @@
       <div>
         <h1 class="text-2xl md:text-3xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-blue-700 to-indigo-600 tracking-tight flex items-center gap-3">
           <svg class="w-8 h-8 text-blue-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg>
-          Malayalam PDF Generator
+          ChatGPT to Pretty PDF
         </h1>
-        <p class="text-sm text-gray-500 mt-1.5 font-medium ml-11">Beautiful, dense, print-ready Markdown conversion.</p>
+        <p class="text-sm text-gray-500 mt-1.5 font-medium ml-11">Beautiful, dense, print-ready document conversion.</p>
       </div>
       
       <!-- Info Cards -->
@@ -390,14 +537,14 @@
           <div class="text-xl flex-shrink-0">💡</div>
           <div>
             <strong class="text-blue-900 block mb-0.5">How to write</strong>
-            <span class="text-blue-700/80 leading-snug block text-xs">Type your markdown on the left, pick a beautiful theme, and click download.</span>
+            <span class="text-blue-700/80 leading-snug block text-xs">Paste your ChatGPT markdown on the left, pick a beautiful theme, and click download.</span>
           </div>
         </div>
         <div class="bg-emerald-50 border border-emerald-100 rounded-xl p-3 sm:w-72 flex gap-3 shadow-sm hover:shadow transition-shadow">
           <div class="text-xl flex-shrink-0">✨</div>
           <div>
             <strong class="text-emerald-900 block mb-0.5">Key Features</strong>
-            <span class="text-emerald-700/80 leading-snug block text-xs">Native Noto Malayalam fonts, rich custom Tailwind themes, and perfect A4 formatting.</span>
+            <span class="text-emerald-700/80 leading-snug block text-xs">Full English & Malayalam support, premium Google fonts, beautiful styling, and perfect A4 formatting.</span>
           </div>
         </div>
       </div>
@@ -422,6 +569,11 @@
           <option value="prose-dense_ocean">Ocean Wave (Teal/Cyan)</option>
           <option value="prose-dense_rosegold">Rose Gold (Rose/Amber)</option>
           <option value="prose-dense_cyber">Cyberpunk (Pink/Cyan)</option>
+          <option disabled>──────────</option>
+          <option value="prose-dense_inter">Inter - Clean & Modern</option>
+          <option value="prose-dense_lora">Lora - Elegant Serif</option>
+          <option value="prose-dense_raleway">Raleway - Minimalist</option>
+          <option value="prose-dense_rubik">Rubik - Soft & Friendly</option>
         </select>
       </div>
 

@@ -10,6 +10,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const previewContent = document.getElementById('preview-content');
     const exportBtn = document.getElementById('export-btn');
     const themeSelector = document.getElementById('theme-selector');
+    const fontFactorSlider = document.getElementById('font-factor');
+    const fontFactorDisplay = document.getElementById('font-factor-display');
 
     // Sample Content Load
     markdownInput.value = `# മലയാളം Title 
@@ -52,6 +54,15 @@ document.addEventListener('DOMContentLoaded', () => {
             });
             // Add new theme
             previewContent.classList.add(e.target.value);
+        });
+    }
+
+    // Font factor change listener
+    if (fontFactorSlider) {
+        fontFactorSlider.addEventListener('input', (e) => {
+            const factor = e.target.value;
+            fontFactorDisplay.textContent = Number(factor).toFixed(2) + 'x';
+            previewContent.style.setProperty('--font-factor', factor);
         });
     }
 

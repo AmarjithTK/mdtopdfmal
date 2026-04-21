@@ -372,16 +372,36 @@
 <body class="bg-gray-50 flex flex-col h-auto overflow-auto md:h-screen md:overflow-hidden text-gray-800 font-sans print:overflow-visible print:bg-white print:h-auto">
   
   <!-- Header with Explanation -->
-  <header class="bg-white border-b border-gray-200 px-4 py-4 md:px-6 md:py-4 flex-none print:hidden z-30 shadow-[0_2px_4px_rgba(0,0,0,0.02)]">
-    <div class="max-w-6xl mx-auto md:mx-0">
-      <h1 class="text-xl md:text-2xl font-extrabold text-slate-800 tracking-tight flex items-center gap-2">
-        <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
-        Malayalam PDF Generator
-      </h1>
-      <p class="text-sm text-gray-500 mt-2 max-w-3xl leading-relaxed">
-        <strong>Usage:</strong> Type your markdown on the left, and see it rendered immediately. Select a theme, then click "Download PDF". <br class="hidden md:block"/>
-        <strong>Features:</strong> Perfect Malayalam font rendering (Noto Sans/Serif), rich Tailwind themes, continuous page breaks handling, and an exact A4 page projection inside your browser. Focus strictly on content.
-      </p>
+  <header class="bg-white border-b border-gray-200 flex-none print:hidden z-30 shadow-sm relative">
+    <div class="px-4 py-5 md:px-6 max-w-full mx-auto flex flex-col xl:flex-row xl:items-center justify-between gap-5">
+      
+      <!-- Title Area -->
+      <div>
+        <h1 class="text-2xl md:text-3xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-blue-700 to-indigo-600 tracking-tight flex items-center gap-3">
+          <svg class="w-8 h-8 text-blue-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg>
+          Malayalam PDF Generator
+        </h1>
+        <p class="text-sm text-gray-500 mt-1.5 font-medium ml-11">Beautiful, dense, print-ready Markdown conversion.</p>
+      </div>
+      
+      <!-- Info Cards -->
+      <div class="flex flex-col sm:flex-row gap-3 text-sm flex-shrink-0">
+        <div class="bg-blue-50 border border-blue-100 rounded-xl p-3 sm:w-64 flex gap-3 shadow-sm hover:shadow transition-shadow">
+          <div class="text-xl flex-shrink-0">💡</div>
+          <div>
+            <strong class="text-blue-900 block mb-0.5">How to write</strong>
+            <span class="text-blue-700/80 leading-snug block text-xs">Type your markdown on the left, pick a beautiful theme, and click download.</span>
+          </div>
+        </div>
+        <div class="bg-emerald-50 border border-emerald-100 rounded-xl p-3 sm:w-72 flex gap-3 shadow-sm hover:shadow transition-shadow">
+          <div class="text-xl flex-shrink-0">✨</div>
+          <div>
+            <strong class="text-emerald-900 block mb-0.5">Key Features</strong>
+            <span class="text-emerald-700/80 leading-snug block text-xs">Native Noto Malayalam fonts, rich custom Tailwind themes, and perfect A4 formatting.</span>
+          </div>
+        </div>
+      </div>
+      
     </div>
   </header>
 

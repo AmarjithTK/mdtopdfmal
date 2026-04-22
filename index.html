@@ -374,7 +374,7 @@
       textAlign: 'left',
       fontSize: 'calc(13.5px * var(--font-factor, 1))', 
       lineHeight: '1.5',
-      letterSpacing: '0.01em',
+      letterSpacing: '0',
       h1: { marginBottom: '0.4em', marginTop: '1.2em', fontSize: '1.6em', borderBottom: '1px solid #d4d4d8', paddingBottom: '0.25em', fontWeight: '700', color: '#18181b', fontStyle: 'italic' },
       h2: { marginBottom: '0.4em', marginTop: '1em', fontSize: '1.3em', fontWeight: '600', color: '#27272a' },
       h3: { marginBottom: '0.3em', marginTop: '0.8em', fontSize: '1.1em', fontWeight: '600', color: '#3f3f46' },
@@ -411,8 +411,8 @@
       textAlign: 'left',
       fontSize: 'calc(13px * var(--font-factor, 1))', 
       lineHeight: '1.5',
-      h1: { marginBottom: '0.4em', marginTop: '1.2em', fontSize: '1.7em', paddingBottom: '0.25em', fontWeight: '800', color: '#0f172a', letterSpacing: '-0.02em' },
-      h2: { marginBottom: '0.4em', marginTop: '1em', fontSize: '1.4em', fontWeight: '700', color: '#1e293b', letterSpacing: '-0.01em' },
+      h1: { marginBottom: '0.4em', marginTop: '1.2em', fontSize: '1.7em', paddingBottom: '0.25em', fontWeight: '800', color: '#0f172a', letterSpacing: '0' },
+      h2: { marginBottom: '0.4em', marginTop: '1em', fontSize: '1.4em', fontWeight: '700', color: '#1e293b', letterSpacing: '0' },
       h3: { marginBottom: '0.3em', marginTop: '0.8em', fontSize: '1.2em', fontWeight: '600', color: '#334155' },
       p: { marginTop: '0.4em', marginBottom: '0.4em' },
       ul: { marginTop: '0.3em', marginBottom: '0.3em', paddingLeft: '1.25em' },
@@ -427,7 +427,7 @@
       'blockquote::before': { content: '"\\201C"', position: 'absolute', left: '0', top: '-0.2em', color: '#10b981', fontSize: '2em', fontWeight: '800', opacity: '0.4' },
       table: { fontSize: '0.95em', width: '100%', marginTop: '1em', marginBottom: '1em' },
       thead: { borderBottomWidth: '1px', borderBottomColor: '#94a3b8' },
-      'thead th': { padding: '4px 8px', fontWeight: '600', color: '#0f172a', textTransform: 'uppercase', letterSpacing: '0.05em', fontSize: '0.85em' },
+      'thead th': { padding: '4px 8px', fontWeight: '600', color: '#0f172a', textTransform: 'uppercase', letterSpacing: '0', fontSize: '0.85em' },
       'tbody td': { padding: '4px 8px', borderBottomWidth: '1px', borderBottomColor: '#e2e8f0' },
       pre: { padding: '0.5em', marginTop: '0.5em', marginBottom: '0.5em', fontSize: '0.85em', background: '#f8fafc', color: '#334155', borderRadius: '0.25rem', border: '1px solid #cbd5e1' },
       code: { fontWeight: '600', background: '#ecfdf5', color: '#065f46', padding: '0.1em 0.3em', borderRadius: '0.125rem' },
@@ -520,7 +520,7 @@
   
   <!-- Header with Explanation -->
   <header class="bg-white border-b border-gray-200 flex-none print:hidden z-30 shadow-sm relative">
-    <div class="px-4 py-5 md:px-6 max-w-full mx-auto flex flex-col xl:flex-row xl:items-center justify-between gap-5">
+    <div class="px-4 py-4 md:px-6 max-w-full mx-auto flex flex-col xl:flex-row xl:items-center justify-between gap-4">
       
       <!-- Title Area -->
       <div>
@@ -528,23 +528,27 @@
           <svg class="w-8 h-8 text-blue-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg>
           ChatGPT to Pretty PDF
         </h1>
-        <p class="text-sm text-gray-500 mt-1.5 font-medium ml-11">Beautiful, dense, print-ready document conversion.</p>
+        <p class="text-sm text-gray-500 mt-1.5 font-medium ml-11">Dense, print-ready Markdown conversion for Malayalam and English.</p>
       </div>
       
       <!-- Info Cards -->
       <div class="flex flex-col sm:flex-row gap-3 text-sm flex-shrink-0">
-        <div class="bg-blue-50 border border-blue-100 rounded-xl p-3 sm:w-64 flex gap-3 shadow-sm hover:shadow transition-shadow">
-          <div class="text-xl flex-shrink-0">💡</div>
+        <div class="bg-blue-50 border border-blue-100 rounded-lg p-3 sm:w-64 flex gap-3 shadow-sm hover:shadow transition-shadow">
+          <div class="text-blue-700 flex-shrink-0 mt-0.5">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414A1 1 0 0119 9.414V19a2 2 0 01-2 2z"></path></svg>
+          </div>
           <div>
             <strong class="text-blue-900 block mb-0.5">How to write</strong>
             <span class="text-blue-700/80 leading-snug block text-xs">Paste your ChatGPT markdown on the left, pick a beautiful theme, and click download.</span>
           </div>
         </div>
-        <div class="bg-emerald-50 border border-emerald-100 rounded-xl p-3 sm:w-72 flex gap-3 shadow-sm hover:shadow transition-shadow">
-          <div class="text-xl flex-shrink-0">✨</div>
+        <div class="bg-emerald-50 border border-emerald-100 rounded-lg p-3 sm:w-72 flex gap-3 shadow-sm hover:shadow transition-shadow">
+          <div class="text-emerald-700 flex-shrink-0 mt-0.5">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+          </div>
           <div>
             <strong class="text-emerald-900 block mb-0.5">Key Features</strong>
-            <span class="text-emerald-700/80 leading-snug block text-xs">Full English & Malayalam support, premium Google fonts, beautiful styling, and perfect A4 formatting.</span>
+            <span class="text-emerald-700/80 leading-snug block text-xs">Live preview, persistent settings, file import/export, and browser-native PDF output.</span>
           </div>
         </div>
       </div>
@@ -554,7 +558,7 @@
 
   <main class="flex-1 flex flex-col md:flex-row min-h-0 w-full print:block print:h-auto print:w-auto relative">
     <!-- Sidebar -->
-    <aside class="w-full md:w-64 flex-none bg-white border-b md:border-b-0 md:border-r border-gray-200 flex flex-col p-4 md:p-6 print:hidden shadow-sm z-20">
+    <aside class="w-full md:w-72 flex-none bg-white border-b md:border-b-0 md:border-r border-gray-200 flex flex-col p-4 md:p-5 print:hidden shadow-sm z-20 overflow-y-auto">
       <h2 class="text-xs font-bold text-gray-500 uppercase tracking-widest mb-4 md:mb-6">PDF Export Settings</h2>
       
       <div class="mb-4 md:mb-6 flex flex-col gap-2">
@@ -579,10 +583,66 @@
 
       <div class="mb-4 md:mb-6 flex flex-col gap-2">
         <div class="flex justify-between items-center mb-1">
-          <label for="font-factor" class="text-xs font-semibold text-gray-600 block">Font Size Factor:</label>
+          <label for="font-factor" class="text-xs font-semibold text-gray-600 block">Font Size</label>
           <span id="font-factor-display" class="text-xs font-bold text-blue-600 bg-blue-50 px-2 py-0.5 rounded">1.0x</span>
         </div>
         <input type="range" id="font-factor" min="0.7" max="1.5" step="0.05" value="1.0" class="w-full accent-blue-600 cursor-pointer h-1.5 bg-gray-200 rounded-lg appearance-none">
+      </div>
+
+      <div class="mb-4 md:mb-6 flex flex-col gap-2">
+        <div class="flex justify-between items-center mb-1">
+          <label for="line-height" class="text-xs font-semibold text-gray-600 block">Line Height</label>
+          <span id="line-height-display" class="text-xs font-bold text-blue-600 bg-blue-50 px-2 py-0.5 rounded">1.45</span>
+        </div>
+        <input type="range" id="line-height" min="1.2" max="1.9" step="0.05" value="1.45" class="w-full accent-blue-600 cursor-pointer h-1.5 bg-gray-200 rounded-lg appearance-none">
+      </div>
+
+      <div class="grid grid-cols-2 gap-3 mb-4 md:mb-6">
+        <div class="flex flex-col gap-2">
+          <label for="paper-size" class="text-xs font-semibold text-gray-600 block">Paper</label>
+          <select id="paper-size" class="w-full bg-gray-50 border border-gray-200 text-gray-700 rounded p-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent cursor-pointer">
+            <option value="A4">A4</option>
+            <option value="Letter">Letter</option>
+          </select>
+        </div>
+        <div class="flex flex-col gap-2">
+          <label for="orientation" class="text-xs font-semibold text-gray-600 block">Orientation</label>
+          <select id="orientation" class="w-full bg-gray-50 border border-gray-200 text-gray-700 rounded p-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent cursor-pointer">
+            <option value="portrait">Portrait</option>
+            <option value="landscape">Landscape</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-2 gap-3 mb-4 md:mb-6">
+        <div class="flex flex-col gap-2">
+          <label for="print-margin" class="text-xs font-semibold text-gray-600 block">Margin</label>
+          <select id="print-margin" class="w-full bg-gray-50 border border-gray-200 text-gray-700 rounded p-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent cursor-pointer">
+            <option value="8mm">Compact</option>
+            <option value="12mm">Standard</option>
+            <option value="20mm">Roomy</option>
+          </select>
+        </div>
+        <div class="flex flex-col gap-2">
+          <label for="text-align" class="text-xs font-semibold text-gray-600 block">Align</label>
+          <select id="text-align" class="w-full bg-gray-50 border border-gray-200 text-gray-700 rounded p-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent cursor-pointer">
+            <option value="left">Left</option>
+            <option value="justify">Justify</option>
+            <option value="center">Center</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="mb-4 md:mb-6 flex flex-col gap-2">
+        <label for="font-family" class="text-xs font-semibold text-gray-600 block">Document Font</label>
+        <select id="font-family" class="w-full bg-gray-50 border border-gray-200 text-gray-700 rounded p-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent cursor-pointer">
+          <option value="">Theme Default</option>
+          <option value="'Noto Sans Malayalam', sans-serif">Malayalam Sans</option>
+          <option value="'Noto Serif Malayalam', serif">Malayalam Serif</option>
+          <option value="'Inter', sans-serif">English Modern</option>
+          <option value="'Lora', serif">English Serif</option>
+          <option value="'Rubik', sans-serif">Soft Sans</option>
+        </select>
       </div>
 
       <div class="mb-4 md:mb-6 flex flex-col gap-3 hidden md:flex">
@@ -592,6 +652,17 @@
       </div>
       
       <div class="mt-4 md:mt-auto flex flex-col gap-2">
+        <div class="grid grid-cols-2 gap-2">
+          <input id="file-input" type="file" accept=".md,.markdown,.txt,text/markdown,text/plain" class="hidden">
+          <button id="import-btn" type="button" class="w-full bg-white hover:bg-gray-50 text-slate-700 border border-gray-200 font-medium py-2.5 px-3 rounded-lg transition-colors shadow-sm flex items-center justify-center gap-2 text-sm">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1M8 12l4 4m0 0l4-4m-4 4V4"></path></svg>
+            Open
+          </button>
+          <button id="download-md-btn" type="button" class="w-full bg-white hover:bg-gray-50 text-slate-700 border border-gray-200 font-medium py-2.5 px-3 rounded-lg transition-colors shadow-sm flex items-center justify-center gap-2 text-sm">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v12m0 0l-4-4m4 4l4-4M5 20h14"></path></svg>
+            Save
+          </button>
+        </div>
         <button id="export-btn" class="w-full bg-slate-800 hover:bg-slate-900 text-white font-medium py-2.5 px-4 rounded-lg transition-colors shadow flex items-center justify-center gap-2 text-sm">
           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path></svg>
           Download PDF
@@ -602,7 +673,7 @@
     <!-- Markdown Editor -->
     <div class="w-full md:w-auto md:flex-1 h-64 md:h-auto bg-white border-b md:border-b-0 md:border-r border-gray-200 print:hidden flex flex-col min-w-0 z-10 shadow-[4px_0_10px_-5px_rgba(0,0,0,0.05)]">
       <div class="flex items-center justify-between border-b border-gray-200 px-4 md:px-5 py-2.5 md:py-3 bg-gray-50/80">
-        <span class="text-xs font-bold text-gray-500 uppercase tracking-widest">📝 Editor</span>
+        <span class="text-xs font-bold text-gray-500 uppercase tracking-widest">Editor</span>
       </div>
       <textarea id="markdown-input" class="flex-1 w-full p-4 md:p-6 resize-none focus:outline-none font-mono text-sm text-gray-600 leading-relaxed bg-[#fdfdfd]" placeholder="Type your Markdown here (മലയാളം)..."></textarea>
     </div>
@@ -610,11 +681,11 @@
     <!-- Live Preview -->
     <div class="w-full md:w-auto md:flex-[1.5] min-h-[500px] md:min-h-0 overflow-y-auto bg-gray-100/60 min-w-0 print-preview-bg print:overflow-visible print:bg-transparent print:w-full print:block print:flex-none">
       <div class="flex items-center justify-between border-b border-gray-200 px-4 md:px-5 py-2.5 md:py-3 bg-white sticky top-0 z-10 shadow-[0_1px_2px_rgba(0,0,0,0.02)] print:hidden">
-        <span class="text-xs font-bold text-gray-500 uppercase tracking-widest">📄 A4 Preview</span>
+        <span id="preview-label" class="text-xs font-bold text-gray-500 uppercase tracking-widest">A4 Preview</span>
       </div>
       
       <!-- The A4 shaped container -->
-      <div class="p-4 md:p-8 mx-auto my-4 md:my-6 max-w-full md:max-w-[210mm] min-h-[297mm] bg-white shadow-md print-reset-container border border-gray-200 print:shadow-none print:border-none print:m-0 print:p-0 print:max-w-full">
+      <div id="page-preview" class="p-4 md:p-8 mx-auto my-4 md:my-6 max-w-full md:max-w-[210mm] min-h-[297mm] bg-white shadow-md print-reset-container border border-gray-200 print:shadow-none print:border-none print:m-0 print:p-0 print:max-w-full">
         <div id="preview-content" class="prose prose-dense_minimal max-w-none"></div>
       </div>
     </div>

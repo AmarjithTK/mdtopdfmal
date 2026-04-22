@@ -1,15 +1,46 @@
-/* Tailwind CSS Print Fallbacks */
+:root {
+  --print-page-size: A4 portrait;
+  --print-margin: 8mm;
+}
+
+#preview-content.has-line-height-override,
+#preview-content.has-line-height-override * {
+  line-height: var(--line-height-override) !important;
+}
+
+#preview-content table {
+  border-collapse: collapse;
+}
+
+#preview-content img {
+  display: block;
+  height: auto;
+  max-width: 100%;
+}
+
+#preview-content pre {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
 
 @media print {
   @page {
-    size: A4;
-    margin: 8mm; 
+    size: var(--print-page-size);
+    margin: var(--print-margin); 
+  }
+
+  html,
+  body {
+    width: auto !important;
+    height: auto !important;
+    background: white !important;
   }
   
   #preview-content {
     max-width: 100% !important;
     width: 100% !important;
     color: black !important;
+    overflow: visible !important;
   }
 
   /* Reset all aggressive breaking rules from browser/tailwind defaults */
@@ -19,17 +50,55 @@
   }
 
   /* Typography flow protection */
-  h1, h2, h3, h4, h5, h6 {
+  #preview-content h1,
+  #preview-content h2,
+  #preview-content h3,
+  #preview-content h4,
+  #preview-content h5,
+  #preview-content h6 {
     page-break-after: avoid !important;
     break-after: avoid !important;
     /* Heads shouldn't split anyway */
     page-break-inside: avoid !important;
     break-inside: avoid !important;
+    orphans: 3;
+    widows: 3;
+  }
+
+  #preview-content h1:not(:first-child) {
+    break-before: auto;
+    page-break-before: auto;
+  }
+
+  #preview-content p,
+  #preview-content li,
+  #preview-content blockquote {
+    orphans: 3;
+    widows: 3;
   }
   
   /* Prevent only structural atoms from being sliced in half horizontally */
-  img, tr, pre, code {
+  #preview-content img,
+  #preview-content tr,
+  #preview-content pre,
+  #preview-content table,
+  #preview-content thead,
+  #preview-content code {
     page-break-inside: avoid !important;
     break-inside: avoid !important;
+  }
+
+  #preview-content table {
+    display: table;
+    width: 100% !important;
+  }
+
+  #preview-content thead {
+    display: table-header-group;
+  }
+
+  #preview-content a {
+    color: inherit !important;
+    text-decoration: none !important;
   }
 }

@@ -1,216 +1,34 @@
-Yes — and for your goal, **using the browser’s native “Print → Save as PDF” is actually the cleanest solution**.
+# System Update Plan
 
-It’s **better than html2pdf.js** for:
+## Completed Update Pass
 
-* Malayalam text shaping (fonts render perfectly)
-* CSS layout fidelity
-* Multi-page documents
-* Performance (no canvas hacks)
+1. Compact the header and sidebar so the editor and preview have more working space.
+2. Add document controls for font size, line height, paper size, orientation, print margin, text alignment, and font family.
+3. Add Markdown import and Markdown download actions.
+4. Persist the current Markdown and all selected settings in `localStorage`.
+5. Apply page-size and orientation changes to both the on-screen preview and print stylesheet.
+6. Strengthen print CSS for headings, tables, code blocks, images, and links.
+7. Refresh the README to match the upgraded system.
 
----
-
-# ✅ Recommended Approach (Browser-native PDF)
-
-## Flow
+## Current Architecture
 
 ```text
-Markdown → HTML → Styled Page → window.print() → Save as PDF
+Markdown input
+  -> markdown-it
+  -> themed HTML preview
+  -> CSS print layout
+  -> browser print dialog
+  -> Save as PDF
 ```
 
----
+## Why Browser Print Stays
 
-# 1) Markdown → HTML
+The browser print engine is still the best fit for this app because it handles Malayalam shaping, font rendering, and multi-page layout more reliably than canvas-based PDF libraries.
 
-Use:
+## Future Improvements
 
-* markdown-it
-
-```js
-const md = window.markdownit();
-document.getElementById("preview").innerHTML = md.render(markdown);
-```
-
----
-
-# 2) Proper Print CSS (THIS IS KEY)
-
-You control how the PDF looks via `@media print`.
-
-```css
-@page {
-  size: A4;
-  margin: 20mm;
-}
-
-@media print {
-  body {
-    font-family: 'Noto Sans Malayalam', sans-serif;
-    line-height: 1.6;
-  }
-
-  h1, h2, h3 {
-    page-break-after: avoid;
-  }
-
-  p {
-    page-break-inside: avoid;
-  }
-
-  .no-print {
-    display: none;
-  }
-}
-```
-
----
-
-# 3) Malayalam Font (Must include)
-
-Use:
-
-* Noto Sans Malayalam
-
-```html
-<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Malayalam&display=swap" rel="stylesheet">
-```
-
-👉 Browser print engine handles shaping correctly (huge advantage)
-
----
-
-# 4) Trigger Print
-
-```js
-function exportPDF() {
-  window.print();
-}
-```
-
----
-
-# 5) UX Trick (Important)
-
-Create a **print-only layout**:
-
-```html
-<div id="editor" class="no-print">...</div>
-<div id="preview">...</div>
-<button onclick="exportPDF()" class="no-print">Download PDF</button>
-```
-
-👉 Only the formatted document appears in PDF
-
----
-
-# 6) Advantages Over JS PDF Libraries
-
-### vs html2pdf.js
-
-* ✔ Perfect fonts (Malayalam shaping)
-* ✔ Better pagination
-* ✔ CSS works fully
-* ✔ No memory issues
-
-### vs WASM/PDF libs
-
-* ✔ Zero complexity
-* ✔ No font embedding issues
-* ✔ No layout engine needed
-
----
-
-# 7) Limitations
-
-* ❌ No silent download (user must click "Save as PDF")
-* ❌ Slight browser differences
-* ❌ No API-based generation (pure client)
-
----
-
-# 8) Smart Enhancement (Optional)
-
-If you still want automation:
-
-### Hybrid:
-
-* Default → `window.print()`
-* Optional → upload HTML to backend → generate PDF
-
----
-
-# 9) Pro-Level Styling Tips
-
-Use print-specific tweaks:
-
-```css
-@media print {
-  body {
-    max-width: 800px;
-    margin: auto;
-  }
-
-  code {
-    white-space: pre-wrap;
-  }
-
-  table {
-    page-break-inside: avoid;
-  }
-}
-```
-
----
-
-# 🔥 Bottom Line
-
-For your use case:
-
-> **Print-to-PDF is the best solution.**
-
-Skip:
-
-* WASM
-* Heavy PDF libraries
-* Server rendering
-
-Use:
-
-* markdown-it + print CSS + Malayalam font
-
----
-
-If you want next:
-
-* I can design a **perfect print stylesheet (Notion-style / book-style / minimal Kerala-style)**
-* or a **ready UI like StackEdit but Malayalam-first**
-
----
-
-# 🚀 Actionable Build Plan
-
-## Phase 1: Project Setup (Basic Structure)
-1. **Initialize Directory**: Create `index.html`, `style.css`, and `script.js` inside `mdtopdfmal` folder.
-2. **Setup Boilerplate**: Create basic HTML5 shell.
-
-## Phase 2: User Interface & Core Dependencies
-3. **Layout Generation**: Create a three-part layout (Sidebar for style controls, Editor pane, Preview pane).
-4. **Third-Party Integrations**: Include `markdown-it` via CDN for parsing.
-5. **Web Fonts**: Include Google Fonts link for `Noto Sans Malayalam` and potentially others (e.g. Serif alternatives).
-
-## Phase 3: Core Functionality
-6. **Live Preview Sync**: Write JS to read `textarea` content, parse using `markdown-it`, and inject into the Preview `div` dynamically on `input`.
-7. **Basic Styling & Theme Selection**: 
-   * Style the panes and make them scroll independently.
-   * **Style Sidebar**: Implement radio buttons or dropdowns to easily select different CSS themes (Notion-style, Kerala-book-style, Minimalist, etc.).
-   * Write JS to swap CSS classes on the preview container when a new style is selected.
-
-## Phase 4: Print & Export (The Magic)
-8. **Print CSS Engine**: Add `@media print` rules:
-   * Hide Editor and navigation bars (`.no-print { display: none; }`).
-   * Expand Preview container to full width/height.
-   * Apply `@page` margins and typography sizing (A4 dimensions).
-   * Ensure page breaks (avoid breaking headers/paragraphs).
-9. **Export Trigger**: Bind a "Download PDF" button to trigger `window.print()`.
-
-## Phase 5: Polish
-10. **Pre-populate Draft**: Load a sample Malayalam markdown draft (e.g., from `meatybenefits/firstdraft_ml.md`) so the user can immediately test it.
+- Vendor `markdown-it`, Tailwind, and fonts for fully offline use.
+- Split the large Tailwind typography config out of `index.html`.
+- Add a reset-settings button.
+- Add optional front matter for document title, author, and date.
+- Add named style presets for poems, essays, reports, and product sheets.

@@ -11,510 +11,16 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Noto+Sans+Malayalam:wght@400;500;600;700&family=Noto+Serif+Malayalam:wght@400;500;600;700&family=Raleway:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Rubik:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&display=swap" rel="stylesheet">
   
   <link rel="icon" href="favicon.ico">
+  <link rel="manifest" href="manifest.json">
+  <link rel="apple-touch-icon" href="apple-touch-icon.png">
   <link rel="stylesheet" href="style.css">
   
   <!-- Markdown-It library -->
   <script src="https://cdn.jsdelivr.net/npm/markdown-it@13.0.1/dist/markdown-it.min.js"></script>
 
   <!-- Tailwind CSS & Typography Plugin -->
+  <script src="tailwind-config.js"></script>
   <script src="https://cdn.tailwindcss.com?plugins=typography"></script>
-  <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          typography: {
-            dense_minimal: {
-              css: {
-                '--tw-prose-body': '#111827',
-                '--tw-prose-headings': '#000000',
-                '--tw-prose-bullets': '#6b7280',
-                '--tw-prose-hr': '#d1d5db',
-                '--tw-prose-quotes': '#374151',
-                '--tw-prose-quote-borders': '#9ca3af',
-                '--tw-prose-bold': '#000000',
-                fontFamily: '"Noto Sans Malayalam", sans-serif',
-                textAlign: 'left',
-                fontSize: 'calc(13px * var(--font-factor, 1))', 
-                lineHeight: '1.45',
-                h1: { marginBottom: '0.4em', marginTop: '1.2em', fontSize: '1.5em', borderBottom: '1px solid #e5e7eb', paddingBottom: '0.25em', fontWeight: '700', color: '#111827' },
-                h2: { marginBottom: '0.4em', marginTop: '1em', fontSize: '1.2em', fontWeight: '600', color: '#374151' },
-                h3: { marginBottom: '0.3em', marginTop: '0.8em', fontSize: '1.1em', fontWeight: '600', color: '#4b5563' },
-                p: { marginTop: '0.4em', marginBottom: '0.4em' },
-                ul: { marginTop: '0.3em', marginBottom: '0.3em', paddingLeft: '1.25em' },
-                ol: { marginTop: '0.3em', marginBottom: '0.3em', paddingLeft: '1.25em' },
-                li: { marginTop: '0.1em', marginBottom: '0.1em' },
-                'ul > li p': { marginTop: '0.1em', marginBottom: '0.1em' },
-                'ol > li p': { marginTop: '0.1em', marginBottom: '0.1em' },
-                hr: { marginTop: '1em', marginBottom: '1em', borderTopWidth: '1px', borderColor: '#d1d5db' },
-                'ul > li::marker': { color: '#6b7280' },
-                'ol > li::marker': { color: '#4b5563', fontWeight: '600' },
-                blockquote: { borderLeftWidth: '3px', borderLeftColor: '#9ca3af', color: '#374151', fontStyle: 'italic', paddingLeft: '1em', marginTop: '0.5em', marginBottom: '0.5em' },
-                table: { fontSize: '0.95em', width: '100%', marginTop: '1em', marginBottom: '1em' },
-                thead: { borderBottomWidth: '1px', borderBottomColor: '#e5e7eb' },
-                'thead th': { padding: '4px 8px', fontWeight: '600', color: '#111827' },
-                'tbody td': { padding: '4px 8px', borderBottomWidth: '1px', borderBottomColor: '#f3f4f6' },
-                pre: { padding: '0.5em', marginTop: '0.5em', marginBottom: '0.5em', fontSize: '0.85em', background: '#f3f4f6', color: '#1f2937' },
-                code: { fontWeight: '500', background: '#f3f4f6', padding: '0.1em 0.3em', borderRadius: '0.125rem' },
-                'code::before': { content: 'none' }, 'code::after': { content: 'none' },
-                strong: { color: '#000000', fontWeight: '700' },
-              }
-            },
-            dense_blue: {
-              css: {
-                '--tw-prose-body': '#1e293b',
-                '--tw-prose-headings': '#1e3a8a',
-                '--tw-prose-bullets': '#60a5fa',
-                '--tw-prose-hr': '#93c5fd',
-                '--tw-prose-quotes': '#1d4ed8',
-                '--tw-prose-quote-borders': '#60a5fa',
-                '--tw-prose-bold': '#1e40af',
-                fontFamily: '"Noto Sans Malayalam", sans-serif',
-                textAlign: 'left',
-                fontSize: 'calc(13px * var(--font-factor, 1))', 
-                lineHeight: '1.45',
-                h1: { marginBottom: '0.4em', marginTop: '1.2em', fontSize: '1.5em', borderBottom: '2px solid #bfdbfe', paddingBottom: '0.25em', fontWeight: '800', color: '#1e3a8a' },
-                h2: { marginBottom: '0.4em', marginTop: '1em', fontSize: '1.2em', fontWeight: '700', color: '#2563eb' },
-                h3: { marginBottom: '0.3em', marginTop: '0.8em', fontSize: '1.1em', fontWeight: '700', color: '#3b82f6' },
-                p: { marginTop: '0.4em', marginBottom: '0.4em' },
-                ul: { marginTop: '0.3em', marginBottom: '0.3em', paddingLeft: '1.25em' },
-                ol: { marginTop: '0.3em', marginBottom: '0.3em', paddingLeft: '1.25em' },
-                li: { marginTop: '0.1em', marginBottom: '0.1em' },
-                'ul > li p': { marginTop: '0.1em', marginBottom: '0.1em' },
-                'ol > li p': { marginTop: '0.1em', marginBottom: '0.1em' },
-                hr: { marginTop: '1em', marginBottom: '1em', borderTopWidth: '2px', borderColor: '#93c5fd' },
-                'ul > li::marker': { color: '#2563eb' },
-                'ol > li::marker': { color: '#1d4ed8', fontWeight: '700' },
-                blockquote: { borderLeftWidth: '4px', borderLeftColor: '#60a5fa', backgroundColor: '#eff6ff', color: '#1e40af', fontStyle: 'italic', padding: '0.5em 1em', marginTop: '0.5em', marginBottom: '0.5em' },
-                'blockquote p:first-of-type': { marginTop: '0' },
-                'blockquote p:last-of-type': { marginBottom: '0' },
-                table: { fontSize: '0.95em', width: '100%', marginTop: '1em', marginBottom: '1em' },
-                thead: { borderBottomWidth: '2px', borderBottomColor: '#bfdbfe', backgroundColor: '#eff6ff' },
-                'thead th': { padding: '4px 8px', fontWeight: '700', color: '#1e3a8a' },
-                'tbody td': { padding: '4px 8px', borderBottomWidth: '1px', borderBottomColor: '#dbeafe' },
-                pre: { padding: '0.5em', marginTop: '0.5em', marginBottom: '0.5em', fontSize: '0.85em', background: '#eff6ff', color: '#1e3a8a', border: '1px solid #bfdbfe' },
-                code: { fontWeight: '600', color: '#2563eb', background: '#eff6ff', padding: '0.1em 0.3em', borderRadius: '0.125rem' },
-                'code::before': { content: 'none' }, 'code::after': { content: 'none' },
-                strong: { color: '#1e40af', fontWeight: '800' },
-              }
-            },
-            dense_classic: {
-              css: {
-                '--tw-prose-body': '#27272a',
-                '--tw-prose-headings': '#7f1d1d',
-                '--tw-prose-bullets': '#f87171',
-                '--tw-prose-hr': '#fca5a5',
-                '--tw-prose-quotes': '#991b1b',
-                '--tw-prose-quote-borders': '#f87171',
-                '--tw-prose-bold': '#991b1b',
-                fontFamily: '"Noto Serif Malayalam", serif',
-                textAlign: 'justify',
-                fontSize: 'calc(13px * var(--font-factor, 1))', 
-                lineHeight: '1.45',
-                h1: { marginBottom: '0.4em', marginTop: '1.2em', fontSize: '1.5em', borderBottom: '1px dashed #fca5a5', paddingBottom: '0.25em', fontWeight: '700', color: '#7f1d1d' },
-                h2: { marginBottom: '0.4em', marginTop: '1em', fontSize: '1.2em', fontWeight: '600', color: '#991b1b' },
-                h3: { marginBottom: '0.3em', marginTop: '0.8em', fontSize: '1.1em', fontWeight: '600', color: '#b91c1c' },
-                p: { marginTop: '0.4em', marginBottom: '0.4em' },
-                ul: { marginTop: '0.3em', marginBottom: '0.3em', paddingLeft: '1.25em' },
-                ol: { marginTop: '0.3em', marginBottom: '0.3em', paddingLeft: '1.25em' },
-                li: { marginTop: '0.1em', marginBottom: '0.1em' },
-                'ul > li p': { marginTop: '0.1em', marginBottom: '0.1em' },
-                'ol > li p': { marginTop: '0.1em', marginBottom: '0.1em' },
-                hr: { marginTop: '1em', marginBottom: '1em', borderTopWidth: '1px', borderStyle: 'dashed', borderColor: '#fca5a5' },
-                'ul > li::marker': { color: '#b91c1c' },
-                'ol > li::marker': { color: '#991b1b', fontWeight: '700' },
-                blockquote: { borderLeftWidth: '0 !important', borderTopWidth: '2px', borderBottomWidth: '2px', borderColor: '#fca5a5', backgroundColor: '#fef2f2', color: '#991b1b', fontStyle: 'italic', padding: '0.5em 1em', marginTop: '0.5em', marginBottom: '0.5em', textAlign: 'center' },
-                'blockquote p:first-of-type': { marginTop: '0' },
-                'blockquote p:last-of-type': { marginBottom: '0' },
-                table: { fontSize: '0.95em', width: '100%', marginTop: '1em', marginBottom: '1em' },
-                thead: { borderBottomWidth: '2px', borderBottomColor: '#7f1d1d' },
-                'thead th': { padding: '4px 8px', fontWeight: '600', color: '#7f1d1d' },
-                'tbody td': { padding: '4px 8px', borderBottomWidth: '1px', borderBottomColor: '#fee2e2' },
-                pre: { padding: '0.5em', marginTop: '0.5em', marginBottom: '0.5em', fontSize: '0.85em', background: '#fef2f2', border: '1px solid #fecaca' },
-                code: { fontWeight: '600', color: '#991b1b', background: '#fef2f2', padding: '0.1em 0.3em', borderRadius: '0.125rem' },
-                'code::before': { content: 'none' }, 'code::after': { content: 'none' },
-                strong: { color: '#7f1d1d', fontWeight: '700' },
-              }
-            },
-            dense_emerald: {
-              css: {
-                '--tw-prose-body': '#1f2937',
-                '--tw-prose-headings': '#064e3b', /* Emerald 900 */
-                '--tw-prose-bullets': '#10b981', /* Emerald 500 */
-                '--tw-prose-hr': '#34d399', /* Emerald 400 */
-                '--tw-prose-quotes': '#047857', /* Emerald 700 */
-                '--tw-prose-quote-borders': '#34d399',
-                '--tw-prose-bold': '#065f46',
-                fontFamily: '"Noto Sans Malayalam", sans-serif',
-                textAlign: 'left',
-                fontSize: 'calc(13px * var(--font-factor, 1))', 
-                lineHeight: '1.45',
-                h1: { marginBottom: '0.4em', marginTop: '1.2em', fontSize: '1.5em', borderBottom: '3px solid #10b981', paddingBottom: '0.25em', fontWeight: '800', color: '#064e3b' },
-                h2: { marginBottom: '0.4em', marginTop: '1em', fontSize: '1.2em', fontWeight: '700', color: '#047857' },
-                h3: { marginBottom: '0.3em', marginTop: '0.8em', fontSize: '1.1em', fontWeight: '700', color: '#059669' },
-                p: { marginTop: '0.4em', marginBottom: '0.4em' },
-                ul: { marginTop: '0.3em', marginBottom: '0.3em', paddingLeft: '1.25em' },
-                ol: { marginTop: '0.3em', marginBottom: '0.3em', paddingLeft: '1.25em' },
-                li: { marginTop: '0.1em', marginBottom: '0.1em' },
-                'ul > li p': { marginTop: '0.1em', marginBottom: '0.1em' },
-                'ol > li p': { marginTop: '0.1em', marginBottom: '0.1em' },
-                hr: { marginTop: '1em', marginBottom: '1em', borderTopWidth: '3px', borderColor: '#34d399', borderRadius: '5px' },
-                'ul > li::marker': { color: '#059669' },
-                'ol > li::marker': { color: '#047857', fontWeight: '800' },
-                blockquote: { borderLeftWidth: '4px', borderLeftColor: '#10b981', backgroundColor: '#ecfdf5', color: '#065f46', fontStyle: 'italic', padding: '0.5em 1em', marginTop: '0.5em', marginBottom: '0.5em' },
-                'blockquote p:first-of-type': { marginTop: '0' },
-                'blockquote p:last-of-type': { marginBottom: '0' },
-                table: { fontSize: '0.95em', width: '100%', marginTop: '1em', marginBottom: '1em' },
-                thead: { borderBottomWidth: '2px', borderBottomColor: '#10b981', backgroundColor: '#d1fae5' },
-                'thead th': { padding: '4px 8px', fontWeight: '700', color: '#064e3b' },
-                'tbody td': { padding: '4px 8px', borderBottomWidth: '1px', borderBottomColor: '#a7f3d0' },
-                pre: { padding: '0.5em', marginTop: '0.5em', marginBottom: '0.5em', fontSize: '0.85em', background: '#ecfdf5', color: '#064e3b', border: '1px solid #6ee7b7' },
-                code: { fontWeight: '700', color: '#059669', background: '#ecfdf5', padding: '0.1em 0.3em', borderRadius: '0.125rem' },
-                'code::before': { content: 'none' }, 'code::after': { content: 'none' },
-                strong: { color: '#065f46', fontWeight: '800' },
-              }
-            },
-            dense_sunset: {
-              css: {
-                '--tw-prose-body': '#3f2c2c',
-                '--tw-prose-headings': '#9a3412', /* Orange 800 */
-                '--tw-prose-bullets': '#f97316', /* Orange 500 */
-                '--tw-prose-hr': '#fb923c', /* Orange 400 */
-                '--tw-prose-quotes': '#c2410c', /* Orange 700 */
-                '--tw-prose-quote-borders': '#fb923c',
-                '--tw-prose-bold': '#9a3412',
-                fontFamily: '"Noto Serif Malayalam", serif',
-                textAlign: 'left',
-                fontSize: 'calc(13px * var(--font-factor, 1))', 
-                lineHeight: '1.45',
-                h1: { marginBottom: '0.4em', marginTop: '1.2em', fontSize: '1.5em', borderBottom: '3px solid #f97316', paddingBottom: '0.25em', fontWeight: '800', color: '#7c2d12', backgroundImage: 'linear-gradient(to right, #f97316, #ec4899)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' },
-                h2: { marginBottom: '0.4em', marginTop: '1em', fontSize: '1.2em', fontWeight: '700', color: '#9a3412' },
-                h3: { marginBottom: '0.3em', marginTop: '0.8em', fontSize: '1.1em', fontWeight: '700', color: '#c2410c' },
-                p: { marginTop: '0.4em', marginBottom: '0.4em' },
-                ul: { marginTop: '0.3em', marginBottom: '0.3em', paddingLeft: '1.25em' },
-                ol: { marginTop: '0.3em', marginBottom: '0.3em', paddingLeft: '1.25em' },
-                li: { marginTop: '0.1em', marginBottom: '0.1em' },
-                'ul > li p': { marginTop: '0.1em', marginBottom: '0.1em' },
-                'ol > li p': { marginTop: '0.1em', marginBottom: '0.1em' },
-                hr: { marginTop: '1em', marginBottom: '1em', border: 'none', height: '3px', background: 'linear-gradient(to right, #f97316, #ec4899, #f97316)' },
-                'ul > li::marker': { color: '#ec4899' /* Pink */ },
-                'ol > li::marker': { color: '#db2777', fontWeight: '800' },
-                blockquote: { borderLeftWidth: '4px', borderLeftColor: '#f97316', backgroundColor: '#fff7ed', color: '#9a3412', fontStyle: 'italic', padding: '0.5em 1em', marginTop: '0.5em', marginBottom: '0.5em' },
-                'blockquote p:first-of-type': { marginTop: '0' },
-                'blockquote p:last-of-type': { marginBottom: '0' },
-                table: { fontSize: '0.95em', width: '100%', marginTop: '1em', marginBottom: '1em' },
-                thead: { borderBottomWidth: '2px', borderBottomColor: '#f97316', backgroundColor: '#ffedd5' },
-                'thead th': { padding: '4px 8px', fontWeight: '700', color: '#7c2d12' },
-                'tbody td': { padding: '4px 8px', borderBottomWidth: '1px', borderBottomColor: '#fed7aa' },
-                pre: { padding: '0.5em', marginTop: '0.5em', marginBottom: '0.5em', fontSize: '0.85em', background: '#fff7ed', color: '#9a3412', border: '1px solid #fdba74' },
-                code: { fontWeight: '700', color: '#c2410c', background: '#fff7ed', padding: '0.1em 0.3em', borderRadius: '0.125rem' },
-                'code::before': { content: 'none' }, 'code::after': { content: 'none' },
-                strong: { color: '#7c2d12', fontWeight: '800' },
-              }
-            },
-            dense_violet: {
-              css: {
-                '--tw-prose-body': '#2e1065',
-                '--tw-prose-headings': '#4c1d95', /* Violet 900 */
-                '--tw-prose-bullets': '#8b5cf6', /* Violet 400 */
-                '--tw-prose-hr': '#a78bfa', /* Violet 400 */
-                '--tw-prose-quotes': '#5b21b6', /* Violet 800 */
-                '--tw-prose-quote-borders': '#8b5cf6',
-                '--tw-prose-bold': '#4c1d95',
-                fontFamily: '"Noto Sans Malayalam", sans-serif',
-                textAlign: 'left',
-                fontSize: 'calc(13px * var(--font-factor, 1))', 
-                lineHeight: '1.45',
-                h1: { marginBottom: '0.4em', marginTop: '1.2em', fontSize: '1.5em', borderBottom: '3px solid #8b5cf6', paddingBottom: '0.25em', fontWeight: '800', color: '#4c1d95' },
-                h2: { marginBottom: '0.4em', marginTop: '1em', fontSize: '1.2em', fontWeight: '700', color: '#5b21b6' },
-                h3: { marginBottom: '0.3em', marginTop: '0.8em', fontSize: '1.1em', fontWeight: '700', color: '#6d28d9' },
-                p: { marginTop: '0.4em', marginBottom: '0.4em' },
-                ul: { marginTop: '0.3em', marginBottom: '0.3em', paddingLeft: '1.25em' },
-                ol: { marginTop: '0.3em', marginBottom: '0.3em', paddingLeft: '1.25em' },
-                li: { marginTop: '0.1em', marginBottom: '0.1em' },
-                'ul > li p': { marginTop: '0.1em', marginBottom: '0.1em' },
-                'ol > li p': { marginTop: '0.1em', marginBottom: '0.1em' },
-                hr: { marginTop: '1em', marginBottom: '1em', borderTopWidth: '3px', borderColor: '#a78bfa', borderStyle: 'dotted' },
-                'ul > li::marker': { color: '#7c3aed' },
-                'ol > li::marker': { color: '#5b21b6', fontWeight: '800' },
-                blockquote: { borderLeftWidth: '4px', borderLeftColor: '#8b5cf6', backgroundColor: '#f5f3ff', color: '#5b21b6', fontStyle: 'italic', padding: '0.5em 1em', marginTop: '0.5em', marginBottom: '0.5em' },
-                'blockquote p:first-of-type': { marginTop: '0' },
-                'blockquote p:last-of-type': { marginBottom: '0' },
-                table: { fontSize: '0.95em', width: '100%', marginTop: '1em', marginBottom: '1em' },
-                thead: { borderBottomWidth: '2px', borderBottomColor: '#8b5cf6', backgroundColor: '#ede9fe' },
-                'thead th': { padding: '4px 8px', fontWeight: '700', color: '#4c1d95' },
-                'tbody td': { padding: '4px 8px', borderBottomWidth: '1px', borderBottomColor: '#ddd6fe' },
-                pre: { padding: '0.5em', marginTop: '0.5em', marginBottom: '0.5em', fontSize: '0.85em', background: '#f5f3ff', color: '#4c1d95', border: '1px solid #c4b5fd' },
-                code: { fontWeight: '700', color: '#6d28d9', background: '#f5f3ff', padding: '0.1em 0.3em', borderRadius: '0.125rem' },
-                'code::before': { content: 'none' }, 'code::after': { content: 'none' },
-                strong: { color: '#4c1d95', fontWeight: '800' },
-              }
-            },
-            dense_ocean: {
-              css: {
-                '--tw-prose-body': '#164e63',
-                '--tw-prose-headings': '#083344', /* Cyan 900 */
-                '--tw-prose-bullets': '#06b6d4', /* Cyan 500 */
-                '--tw-prose-hr': '#2dd4bf', /* Teal 400 */
-                '--tw-prose-quotes': '#0f766e', /* Teal 700 */
-                '--tw-prose-quote-borders': '#06b6d4',
-                '--tw-prose-bold': '#083344',
-                fontFamily: '"Noto Sans Malayalam", sans-serif',
-                textAlign: 'left',
-                fontSize: 'calc(13px * var(--font-factor, 1))', 
-                lineHeight: '1.45',
-                h1: { marginBottom: '0.4em', marginTop: '1.2em', fontSize: '1.5em', borderBottom: '3px solid #06b6d4', paddingBottom: '0.25em', fontWeight: '800', color: '#083344' },
-                h2: { marginBottom: '0.4em', marginTop: '1em', fontSize: '1.2em', fontWeight: '700', color: '#0e7490' },
-                h3: { marginBottom: '0.3em', marginTop: '0.8em', fontSize: '1.1em', fontWeight: '700', color: '#14b8a6' },
-                p: { marginTop: '0.4em', marginBottom: '0.4em' },
-                ul: { marginTop: '0.3em', marginBottom: '0.3em', paddingLeft: '1.25em' },
-                ol: { marginTop: '0.3em', marginBottom: '0.3em', paddingLeft: '1.25em' },
-                li: { marginTop: '0.1em', marginBottom: '0.1em' },
-                'ul > li p': { marginTop: '0.1em', marginBottom: '0.1em' },
-                'ol > li p': { marginTop: '0.1em', marginBottom: '0.1em' },
-                hr: { marginTop: '1em', marginBottom: '1em', borderTopWidth: '4px', borderColor: '#2dd4bf', borderStyle: 'double' },
-                'ul > li::marker': { color: '#0891b2' },
-                'ol > li::marker': { color: '#0e7490', fontWeight: '800' },
-                blockquote: { borderLeftWidth: '5px', borderLeftColor: '#06b6d4', backgroundColor: '#ecfeff', color: '#0f766e', fontStyle: 'italic', padding: '0.5em 1em', marginTop: '0.5em', marginBottom: '0.5em' },
-                'blockquote p:first-of-type': { marginTop: '0' },
-                'blockquote p:last-of-type': { marginBottom: '0' },
-                table: { fontSize: '0.95em', width: '100%', marginTop: '1em', marginBottom: '1em' },
-                thead: { borderBottomWidth: '2px', borderBottomColor: '#06b6d4', backgroundColor: '#cffafe' },
-                'thead th': { padding: '4px 8px', fontWeight: '700', color: '#083344' },
-                'tbody td': { padding: '4px 8px', borderBottomWidth: '1px', borderBottomColor: '#a5f3fc' },
-                pre: { padding: '0.5em', marginTop: '0.5em', marginBottom: '0.5em', fontSize: '0.85em', background: '#ecfeff', color: '#083344', border: '1px solid #67e8f9' },
-                code: { fontWeight: '700', color: '#0891b2', background: '#ecfeff', padding: '0.1em 0.3em', borderRadius: '0.125rem' },
-                'code::before': { content: 'none' }, 'code::after': { content: 'none' },
-                strong: { color: '#083344', fontWeight: '800' },
-              }
-            },
-            dense_rosegold: {
-              css: {
-                '--tw-prose-body': '#4c0519',
-                '--tw-prose-headings': '#881337', /* Rose 900 */
-                '--tw-prose-bullets': '#f43f5e', /* Rose 500 */
-                '--tw-prose-hr': '#fbbf24', /* Amber 400 */
-                '--tw-prose-quotes': '#be123c', /* Rose 700 */
-                '--tw-prose-quote-borders': '#fbbf24', /* Amber 400 */
-                '--tw-prose-bold': '#881337',
-                fontFamily: '"Noto Serif Malayalam", serif',
-                textAlign: 'left',
-                fontSize: 'calc(13px * var(--font-factor, 1))', 
-                lineHeight: '1.45',
-                h1: { marginBottom: '0.4em', marginTop: '1.2em', fontSize: '1.5em', borderBottom: '2px solid #fbbf24', paddingBottom: '0.25em', fontWeight: '800', color: '#881337' },
-                h2: { marginBottom: '0.4em', marginTop: '1em', fontSize: '1.2em', fontWeight: '700', color: '#9f1239' },
-                h3: { marginBottom: '0.3em', marginTop: '0.8em', fontSize: '1.1em', fontWeight: '700', color: '#be123c' },
-                p: { marginTop: '0.4em', marginBottom: '0.4em' },
-                ul: { marginTop: '0.3em', marginBottom: '0.3em', paddingLeft: '1.25em' },
-                ol: { marginTop: '0.3em', marginBottom: '0.3em', paddingLeft: '1.25em' },
-                li: { marginTop: '0.1em', marginBottom: '0.1em' },
-                'ul > li p': { marginTop: '0.1em', marginBottom: '0.1em' },
-                'ol > li p': { marginTop: '0.1em', marginBottom: '0.1em' },
-                hr: { marginTop: '1em', marginBottom: '1em', borderTopWidth: '2px', borderColor: '#fbbf24', borderStyle: 'solid' },
-                'ul > li::marker': { color: '#fbbf24' },
-                'ol > li::marker': { color: '#e11d48', fontWeight: '800' },
-                blockquote: { borderLeftWidth: '3px', borderLeftColor: '#fbbf24', backgroundColor: '#fff1f2', color: '#9f1239', fontStyle: 'italic', padding: '0.5em 1em', marginTop: '0.5em', marginBottom: '0.5em' },
-                'blockquote p:first-of-type': { marginTop: '0' },
-                'blockquote p:last-of-type': { marginBottom: '0' },
-                table: { fontSize: '0.95em', width: '100%', marginTop: '1em', marginBottom: '1em' },
-                thead: { borderBottomWidth: '2px', borderBottomColor: '#fbbf24', backgroundColor: '#fff1f2' },
-                'thead th': { padding: '4px 8px', fontWeight: '700', color: '#881337' },
-                'tbody td': { padding: '4px 8px', borderBottomWidth: '1px', borderBottomColor: '#fecdd3' },
-                pre: { padding: '0.5em', marginTop: '0.5em', marginBottom: '0.5em', fontSize: '0.85em', background: '#fff1f2', color: '#881337', border: '1px solid #fda4af' },
-                code: { fontWeight: '700', color: '#be123c', background: '#fff1f2', padding: '0.1em 0.3em', borderRadius: '0.125rem' },
-                'code::before': { content: 'none' }, 'code::after': { content: 'none' },
-                strong: { color: '#881337', fontWeight: '800' },
-              }
-            },
-            dense_inter: {
-    css: {
-      '--tw-prose-body': '#111827',
-      '--tw-prose-headings': '#000000',
-      '--tw-prose-bullets': '#6b7280',
-      '--tw-prose-hr': '#d1d5db',
-      '--tw-prose-quotes': '#374151',
-      '--tw-prose-quote-borders': '#3b82f6',
-      '--tw-prose-bold': '#000000',
-      fontFamily: '"Inter", sans-serif',
-      textAlign: 'left',
-      fontSize: 'calc(13px * var(--font-factor, 1))', 
-      lineHeight: '1.45',
-      h1: { marginBottom: '0.4em', marginTop: '1.2em', fontSize: '1.6em', borderBottom: '2px solid #3b82f6', paddingBottom: '0.25em', fontWeight: '800', color: '#111827' },
-      h2: { marginBottom: '0.4em', marginTop: '1em', fontSize: '1.3em', fontWeight: '700', color: '#1f2937' },
-      h3: { marginBottom: '0.3em', marginTop: '0.8em', fontSize: '1.1em', fontWeight: '600', color: '#374151' },
-      p: { marginTop: '0.4em', marginBottom: '0.4em' },
-      ul: { marginTop: '0.3em', marginBottom: '0.3em', paddingLeft: '1.25em' },
-      ol: { marginTop: '0.3em', marginBottom: '0.3em', paddingLeft: '1.25em' },
-      li: { marginTop: '0.1em', marginBottom: '0.1em' },
-      'ul > li p': { marginTop: '0.1em', marginBottom: '0.1em' },
-      'ol > li p': { marginTop: '0.1em', marginBottom: '0.1em' },
-      hr: { marginTop: '1em', marginBottom: '1em', borderTopWidth: '1px', borderColor: '#d1d5db' },
-      'ul > li::marker': { color: '#3b82f6' },
-      'ol > li::marker': { color: '#2563eb', fontWeight: '600' },
-      blockquote: { borderLeftWidth: '4px', borderLeftColor: '#3b82f6', color: '#4b5563', fontStyle: 'italic', paddingLeft: '1em', marginTop: '0.5em', marginBottom: '0.5em', background: '#eff6ff', paddingTop: '0.5em', paddingBottom: '0.5em', borderRadius: '0 0.25rem 0.25rem 0' },
-      table: { fontSize: '0.95em', width: '100%', marginTop: '1em', marginBottom: '1em' },
-      thead: { borderBottomWidth: '2px', borderBottomColor: '#d1d5db' },
-      'thead th': { padding: '6px 8px', fontWeight: '600', color: '#111827', textAlign: 'left' },
-      'tbody td': { padding: '4px 8px', borderBottomWidth: '1px', borderBottomColor: '#e5e7eb' },
-      pre: { padding: '0.75em', marginTop: '0.5em', marginBottom: '0.5em', fontSize: '0.85em', background: '#1f2937', color: '#f3f4f6', borderRadius: '0.375rem' },
-      code: { fontWeight: '500', background: '#eff6ff', color: '#1e40af', padding: '0.1em 0.3em', borderRadius: '0.125rem' },
-      'code::before': { content: 'none' }, 'code::after': { content: 'none' },
-      strong: { color: '#000000', fontWeight: '700' },
-    }
-  },
-  dense_lora: {
-    css: {
-      '--tw-prose-body': '#27272a',
-      '--tw-prose-headings': '#18181b',
-      '--tw-prose-bullets': '#71717a',
-      '--tw-prose-hr': '#e4e4e7',
-      '--tw-prose-quotes': '#52525b',
-      '--tw-prose-quote-borders': '#52525b',
-      '--tw-prose-bold': '#18181b',
-      fontFamily: '"Lora", serif',
-      textAlign: 'left',
-      fontSize: 'calc(13.5px * var(--font-factor, 1))', 
-      lineHeight: '1.5',
-      letterSpacing: '0',
-      h1: { marginBottom: '0.4em', marginTop: '1.2em', fontSize: '1.6em', borderBottom: '1px solid #d4d4d8', paddingBottom: '0.25em', fontWeight: '700', color: '#18181b', fontStyle: 'italic' },
-      h2: { marginBottom: '0.4em', marginTop: '1em', fontSize: '1.3em', fontWeight: '600', color: '#27272a' },
-      h3: { marginBottom: '0.3em', marginTop: '0.8em', fontSize: '1.1em', fontWeight: '600', color: '#3f3f46' },
-      p: { marginTop: '0.4em', marginBottom: '0.4em' },
-      ul: { marginTop: '0.3em', marginBottom: '0.3em', paddingLeft: '1.25em' },
-      ol: { marginTop: '0.3em', marginBottom: '0.3em', paddingLeft: '1.25em' },
-      li: { marginTop: '0.15em', marginBottom: '0.15em' },
-      'ul > li p': { marginTop: '0.1em', marginBottom: '0.1em' },
-      'ol > li p': { marginTop: '0.1em', marginBottom: '0.1em' },
-      hr: { marginTop: '1.2em', marginBottom: '1.2em', borderTopWidth: '1px', borderColor: '#e4e4e7' },
-      'ul > li::marker': { color: '#71717a' },
-      'ol > li::marker': { color: '#52525b', fontWeight: '600' },
-      blockquote: { borderLeftWidth: '3px', borderLeftColor: '#71717a', color: '#52525b', fontStyle: 'italic', paddingLeft: '1.2em', marginTop: '0.8em', marginBottom: '0.8em', fontSize: '1.05em' },
-      table: { fontSize: '0.95em', width: '100%', marginTop: '1em', marginBottom: '1em' },
-      thead: { borderBottomWidth: '1px', borderBottomColor: '#d4d4d8' },
-      'thead th': { padding: '4px 8px', fontWeight: '600', color: '#18181b', textAlign: 'left' },
-      'tbody td': { padding: '4px 8px', borderBottomWidth: '1px', borderBottomColor: '#f4f4f5' },
-      pre: { padding: '0.5em', marginTop: '0.5em', marginBottom: '0.5em', fontSize: '0.85em', background: '#f4f4f5', color: '#27272a', fontFamily: 'monospace', borderRadius: '0.25rem', border: '1px solid #e4e4e7' },
-      code: { fontWeight: '500', background: '#f4f4f5', padding: '0.1em 0.3em', borderRadius: '0.125rem', fontFamily: 'monospace', fontSize: '0.9em' },
-      'code::before': { content: 'none' }, 'code::after': { content: 'none' },
-      strong: { color: '#18181b', fontWeight: '700' },
-    }
-  },
-  dense_raleway: {
-    css: {
-      '--tw-prose-body': '#1e293b',
-      '--tw-prose-headings': '#0f172a',
-      '--tw-prose-bullets': '#94a3b8',
-      '--tw-prose-hr': '#cbd5e1',
-      '--tw-prose-quotes': '#475569',
-      '--tw-prose-quote-borders': '#10b981',
-      '--tw-prose-bold': '#0f172a',
-      fontFamily: '"Raleway", sans-serif',
-      textAlign: 'left',
-      fontSize: 'calc(13px * var(--font-factor, 1))', 
-      lineHeight: '1.5',
-      h1: { marginBottom: '0.4em', marginTop: '1.2em', fontSize: '1.7em', paddingBottom: '0.25em', fontWeight: '800', color: '#0f172a', letterSpacing: '0' },
-      h2: { marginBottom: '0.4em', marginTop: '1em', fontSize: '1.4em', fontWeight: '700', color: '#1e293b', letterSpacing: '0' },
-      h3: { marginBottom: '0.3em', marginTop: '0.8em', fontSize: '1.2em', fontWeight: '600', color: '#334155' },
-      p: { marginTop: '0.4em', marginBottom: '0.4em' },
-      ul: { marginTop: '0.3em', marginBottom: '0.3em', paddingLeft: '1.25em' },
-      ol: { marginTop: '0.3em', marginBottom: '0.3em', paddingLeft: '1.25em' },
-      li: { marginTop: '0.1em', marginBottom: '0.1em' },
-      'ul > li p': { marginTop: '0.1em', marginBottom: '0.1em' },
-      'ol > li p': { marginTop: '0.1em', marginBottom: '0.1em' },
-      hr: { marginTop: '1em', marginBottom: '1em', borderTopWidth: '1px', borderColor: '#cbd5e1' },
-      'ul > li::marker': { color: '#10b981' },
-      'ol > li::marker': { color: '#059669', fontWeight: '600' },
-      blockquote: { borderLeftWidth: '0', borderLeftColor: 'transparent', color: '#334155', fontStyle: 'italic', paddingLeft: '1.5em', marginTop: '0.5em', marginBottom: '0.5em', position: 'relative' },
-      'blockquote::before': { content: '"\\201C"', position: 'absolute', left: '0', top: '-0.2em', color: '#10b981', fontSize: '2em', fontWeight: '800', opacity: '0.4' },
-      table: { fontSize: '0.95em', width: '100%', marginTop: '1em', marginBottom: '1em' },
-      thead: { borderBottomWidth: '1px', borderBottomColor: '#94a3b8' },
-      'thead th': { padding: '4px 8px', fontWeight: '600', color: '#0f172a', textTransform: 'uppercase', letterSpacing: '0', fontSize: '0.85em' },
-      'tbody td': { padding: '4px 8px', borderBottomWidth: '1px', borderBottomColor: '#e2e8f0' },
-      pre: { padding: '0.5em', marginTop: '0.5em', marginBottom: '0.5em', fontSize: '0.85em', background: '#f8fafc', color: '#334155', borderRadius: '0.25rem', border: '1px solid #cbd5e1' },
-      code: { fontWeight: '600', background: '#ecfdf5', color: '#065f46', padding: '0.1em 0.3em', borderRadius: '0.125rem' },
-      'code::before': { content: 'none' }, 'code::after': { content: 'none' },
-      strong: { color: '#0f172a', fontWeight: '700' },
-    }
-  },
-  dense_rubik: {
-    css: {
-      '--tw-prose-body': '#374151',
-      '--tw-prose-headings': '#111827',
-      '--tw-prose-bullets': '#9ca3af',
-      '--tw-prose-hr': '#d1d5db',
-      '--tw-prose-quotes': '#4b5563',
-      '--tw-prose-quote-borders': '#f59e0b',
-      '--tw-prose-bold': '#111827',
-      fontFamily: '"Rubik", sans-serif',
-      textAlign: 'left',
-      fontSize: 'calc(13px * var(--font-factor, 1))', 
-      lineHeight: '1.45',
-      h1: { marginBottom: '0.4em', marginTop: '1.2em', fontSize: '1.5em', borderBottom: '1px solid #e5e7eb', paddingBottom: '0.25em', fontWeight: '600', color: '#111827' },
-      h2: { marginBottom: '0.4em', marginTop: '1em', fontSize: '1.25em', fontWeight: '500', color: '#1f2937' },
-      h3: { marginBottom: '0.3em', marginTop: '0.8em', fontSize: '1.1em', fontWeight: '500', color: '#374151' },
-      p: { marginTop: '0.4em', marginBottom: '0.4em' },
-      ul: { marginTop: '0.3em', marginBottom: '0.3em', paddingLeft: '1.25em' },
-      ol: { marginTop: '0.3em', marginBottom: '0.3em', paddingLeft: '1.25em' },
-      li: { marginTop: '0.1em', marginBottom: '0.1em' },
-      'ul > li p': { marginTop: '0.1em', marginBottom: '0.1em' },
-      'ol > li p': { marginTop: '0.1em', marginBottom: '0.1em' },
-      hr: { marginTop: '1em', marginBottom: '1em', borderTopWidth: '1px', borderColor: '#d1d5db' },
-      'ul > li::marker': { color: '#f59e0b' },
-      'ol > li::marker': { color: '#d97706', fontWeight: '600' },
-      blockquote: { borderLeftWidth: '3px', borderLeftColor: '#f59e0b', background: '#fffbeb', color: '#4b5563', fontStyle: 'italic', paddingLeft: '1em', paddingRight: '1em', marginTop: '0.5em', marginBottom: '0.5em', paddingTop: '0.5em', paddingBottom: '0.5em', borderRadius: '0.375rem' },
-      table: { fontSize: '0.95em', width: '100%', marginTop: '1em', marginBottom: '1em', border: '1px solid #e5e7eb', borderRadius: '0.375rem', overflow: 'hidden' },
-      thead: { background: '#f9fafb', borderBottomWidth: '1px', borderBottomColor: '#e5e7eb' },
-      'thead th': { padding: '6px 8px', fontWeight: '500', color: '#374151', textAlign: 'left' },
-      'tbody td': { padding: '6px 8px', borderBottomWidth: '1px', borderBottomColor: '#f3f4f6' },
-      pre: { padding: '0.5em', marginTop: '0.5em', marginBottom: '0.5em', fontSize: '0.85em', background: '#1f2937', color: '#e5e7eb', borderRadius: '0.375rem' },
-      code: { fontWeight: '500', background: '#fef3c7', color: '#92400e', padding: '0.1em 0.3em', borderRadius: '0.125rem' },
-      'code::before': { content: 'none' }, 'code::after': { content: 'none' },
-      strong: { color: '#111827', fontWeight: '600' },
-    }
-  }
-,
-            dense_cyber: {
-              css: {
-                '--tw-prose-body': '#111827', /* Gray 900 */
-                '--tw-prose-headings': '#ec4899', /* Pink 500 */
-                '--tw-prose-bullets': '#06b6d4', /* Cyan 500 */
-                '--tw-prose-hr': '#d946ef', /* Fuchsia 500 */
-                '--tw-prose-quotes': '#d946ef', /* Fuchsia 500 */
-                '--tw-prose-quote-borders': '#0ea5e9', /* Sky 500 */
-                '--tw-prose-bold': '#db2777', /* Pink 600 */
-                fontFamily: '"Noto Sans Malayalam", sans-serif',
-                textAlign: 'left',
-                fontSize: 'calc(13px * var(--font-factor, 1))', 
-                lineHeight: '1.45',
-                h1: { marginBottom: '0.4em', marginTop: '1.2em', fontSize: '1.5em', borderBottom: '3px solid #ec4899', paddingBottom: '0.25em', fontWeight: '800', color: '#111827' },
-                h2: { marginBottom: '0.4em', marginTop: '1em', fontSize: '1.2em', fontWeight: '700', color: '#db2777' },
-                h3: { marginBottom: '0.3em', marginTop: '0.8em', fontSize: '1.1em', fontWeight: '700', color: '#c026d3' },
-                p: { marginTop: '0.4em', marginBottom: '0.4em' },
-                ul: { marginTop: '0.3em', marginBottom: '0.3em', paddingLeft: '1.25em' },
-                ol: { marginTop: '0.3em', marginBottom: '0.3em', paddingLeft: '1.25em' },
-                li: { marginTop: '0.1em', marginBottom: '0.1em' },
-                'ul > li p': { marginTop: '0.1em', marginBottom: '0.1em' },
-                'ol > li p': { marginTop: '0.1em', marginBottom: '0.1em' },
-                hr: { marginTop: '1em', marginBottom: '1em', border: 'none', height: '4px', background: 'linear-gradient(90deg, #0ea5e9 0%, #d946ef 100%)' },
-                'ul > li::marker': { color: '#0ea5e9' }, /* Sky 500 */
-                'ol > li::marker': { color: '#ec4899', fontWeight: '800' }, /* Pink 500 */
-                blockquote: { borderLeftWidth: '5px', borderLeftColor: '#0ea5e9', backgroundColor: '#fdf4ff', color: '#c026d3', fontStyle: 'italic', padding: '0.5em 1em', marginTop: '0.5em', marginBottom: '0.5em', borderRightWidth: '1px', borderRightColor: '#d946ef' },
-                'blockquote p:first-of-type': { marginTop: '0' },
-                'blockquote p:last-of-type': { marginBottom: '0' },
-                table: { fontSize: '0.95em', width: '100%', marginTop: '1em', marginBottom: '1em' },
-                thead: { borderBottomWidth: '2px', borderBottomColor: '#ec4899', backgroundColor: '#faf5ff' }, /* Fuchsia 50 */
-                'thead th': { padding: '4px 8px', fontWeight: '700', color: '#86198f' },
-                'tbody td': { padding: '4px 8px', borderBottomWidth: '1px', borderBottomColor: '#fbcfe8' }, /* Pink 200 */
-                pre: { padding: '0.5em', marginTop: '0.5em', marginBottom: '0.5em', fontSize: '0.85em', background: '#f8fafc', color: '#1f2937', border: '1px solid #cbd5e1' },
-                code: { fontWeight: '700', color: '#be185d', background: '#e0e7ff', padding: '0.1em 0.3em', borderRadius: '0.125rem' }, /* Indigo 100 */
-                'code::before': { content: 'none' }, 'code::after': { content: 'none' },
-                strong: { color: '#111827', fontWeight: '800' },
-              }
-            }
-          }
-        }
-      }
-    }
-  </script>
 </head>
 <body class="bg-gray-50 flex flex-col h-auto overflow-auto md:h-screen md:overflow-hidden text-gray-800 font-sans print:overflow-visible print:bg-white print:h-auto">
   
@@ -582,6 +88,18 @@
       </div>
 
       <div class="mb-4 md:mb-6 flex flex-col gap-2">
+        <label for="doc-preset" class="text-xs font-semibold text-gray-600 block">Preset</label>
+        <select id="doc-preset" class="w-full bg-gray-50 border border-gray-200 text-gray-700 rounded p-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent cursor-pointer">
+          <option value="">Custom</option>
+          <option value="essay">Malayalam Essay</option>
+          <option value="report">Report</option>
+          <option value="poem">Poem</option>
+          <option value="flyer">Product Flyer</option>
+          <option value="letter">Formal Letter</option>
+        </select>
+      </div>
+
+      <div class="mb-4 md:mb-6 flex flex-col gap-2">
         <div class="flex justify-between items-center mb-1">
           <label for="font-factor" class="text-xs font-semibold text-gray-600 block">Font Size</label>
           <span id="font-factor-display" class="text-xs font-bold text-blue-600 bg-blue-50 px-2 py-0.5 rounded">1.0x</span>
@@ -589,7 +107,13 @@
         <input type="range" id="font-factor" min="0.7" max="1.5" step="0.05" value="1.0" class="w-full accent-blue-600 cursor-pointer h-1.5 bg-gray-200 rounded-lg appearance-none">
       </div>
 
-      <div class="mb-4 md:mb-6 flex flex-col gap-2">
+      <button id="advanced-toggle" type="button" class="mb-4 md:mb-6 w-full bg-gray-50 hover:bg-gray-100 text-slate-700 border border-gray-200 font-semibold py-2.5 px-3 rounded-lg transition-colors flex items-center justify-between gap-2 text-sm" aria-expanded="false" aria-controls="advanced-controls">
+        <span>Advanced Options</span>
+        <svg id="advanced-toggle-icon" class="w-4 h-4 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+      </button>
+
+      <div id="advanced-controls" class="hidden border-t border-gray-100 pt-4 mb-4 md:mb-6">
+      <div class="flex flex-col gap-2">
         <div class="flex justify-between items-center mb-1">
           <label for="line-height" class="text-xs font-semibold text-gray-600 block">Line Height</label>
           <span id="line-height-display" class="text-xs font-bold text-blue-600 bg-blue-50 px-2 py-0.5 rounded">1.45</span>
@@ -597,7 +121,7 @@
         <input type="range" id="line-height" min="1.2" max="1.9" step="0.05" value="1.45" class="w-full accent-blue-600 cursor-pointer h-1.5 bg-gray-200 rounded-lg appearance-none">
       </div>
 
-      <div class="grid grid-cols-2 gap-3 mb-4 md:mb-6">
+      <div class="grid grid-cols-2 gap-3">
         <div class="flex flex-col gap-2">
           <label for="paper-size" class="text-xs font-semibold text-gray-600 block">Paper</label>
           <select id="paper-size" class="w-full bg-gray-50 border border-gray-200 text-gray-700 rounded p-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent cursor-pointer">
@@ -614,7 +138,7 @@
         </div>
       </div>
 
-      <div class="grid grid-cols-2 gap-3 mb-4 md:mb-6">
+      <div class="grid grid-cols-2 gap-3">
         <div class="flex flex-col gap-2">
           <label for="print-margin" class="text-xs font-semibold text-gray-600 block">Margin</label>
           <select id="print-margin" class="w-full bg-gray-50 border border-gray-200 text-gray-700 rounded p-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent cursor-pointer">
@@ -633,7 +157,7 @@
         </div>
       </div>
 
-      <div class="mb-4 md:mb-6 flex flex-col gap-2">
+      <div class="flex flex-col gap-2">
         <label for="font-family" class="text-xs font-semibold text-gray-600 block">Document Font</label>
         <select id="font-family" class="w-full bg-gray-50 border border-gray-200 text-gray-700 rounded p-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent cursor-pointer">
           <option value="">Theme Default</option>
@@ -645,10 +169,37 @@
         </select>
       </div>
 
-      <div class="mb-4 md:mb-6 flex flex-col gap-3 hidden md:flex">
+      <div class="flex flex-col gap-3 border-t border-gray-100 pt-4">
+        <h3 class="text-xs font-bold text-gray-500 uppercase tracking-widest">Document Metadata</h3>
+        <input id="meta-title" type="text" class="w-full bg-gray-50 border border-gray-200 text-gray-700 rounded p-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder="Title">
+        <div class="grid grid-cols-2 gap-2">
+          <input id="meta-author" type="text" class="w-full bg-gray-50 border border-gray-200 text-gray-700 rounded p-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder="Author">
+          <input id="meta-date" type="date" class="w-full bg-gray-50 border border-gray-200 text-gray-700 rounded p-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+        </div>
+        <input id="meta-footer" type="text" class="w-full bg-gray-50 border border-gray-200 text-gray-700 rounded p-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder="Footer text">
+        <label class="flex items-center gap-2 text-xs font-semibold text-gray-600">
+          <input id="show-page-numbers" type="checkbox" class="rounded border-gray-300 text-blue-600 focus:ring-blue-500">
+          Show print page number marker
+        </label>
+      </div>
+
+      <div class="flex flex-col gap-2">
+        <button id="insert-page-break-btn" type="button" class="w-full bg-white hover:bg-gray-50 text-slate-700 border border-gray-200 font-medium py-2.5 px-3 rounded-lg transition-colors shadow-sm flex items-center justify-center gap-2 text-sm">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7h16M4 17h16M8 12h8"></path></svg>
+          Insert Page Break
+        </button>
+        <div class="grid grid-cols-3 gap-2">
+          <button id="reset-settings-btn" type="button" class="w-full bg-white hover:bg-gray-50 text-slate-700 border border-gray-200 font-medium py-2 px-2 rounded-lg transition-colors shadow-sm text-xs">Reset</button>
+          <button id="sample-btn" type="button" class="w-full bg-white hover:bg-gray-50 text-slate-700 border border-gray-200 font-medium py-2 px-2 rounded-lg transition-colors shadow-sm text-xs">Sample</button>
+          <button id="clear-btn" type="button" class="w-full bg-white hover:bg-gray-50 text-red-700 border border-red-100 font-medium py-2 px-2 rounded-lg transition-colors shadow-sm text-xs">Clear</button>
+        </div>
+      </div>
+
+      <div class="flex flex-col gap-3 hidden md:flex">
         <div class="bg-blue-50 text-blue-800 text-xs p-3 rounded-lg border border-blue-100 leading-relaxed shadow-sm">
           <strong>Pro-Tip:</strong> In your browser print dialog, uncheck <em>"Headers and footers"</em> to remove dates & URLs for a perfectly clean PDF.
         </div>
+      </div>
       </div>
       
       <div class="mt-4 md:mt-auto flex flex-col gap-2">
@@ -672,8 +223,9 @@
 
     <!-- Markdown Editor -->
     <div class="w-full md:w-auto md:flex-1 h-64 md:h-auto bg-white border-b md:border-b-0 md:border-r border-gray-200 print:hidden flex flex-col min-w-0 z-10 shadow-[4px_0_10px_-5px_rgba(0,0,0,0.05)]">
-      <div class="flex items-center justify-between border-b border-gray-200 px-4 md:px-5 py-2.5 md:py-3 bg-gray-50/80">
+      <div class="flex items-center justify-between border-b border-gray-200 px-4 md:px-5 py-2.5 md:py-3 bg-gray-50/80 gap-3">
         <span class="text-xs font-bold text-gray-500 uppercase tracking-widest">Editor</span>
+        <span id="document-stats" class="text-xs font-semibold text-gray-500 truncate">0 words / 0 chars / 0 pages</span>
       </div>
       <textarea id="markdown-input" class="flex-1 w-full p-4 md:p-6 resize-none focus:outline-none font-mono text-sm text-gray-600 leading-relaxed bg-[#fdfdfd]" placeholder="Type your Markdown here (മലയാളം)..."></textarea>
     </div>
@@ -693,8 +245,9 @@
 
   <!-- Footer -->
   <footer class="bg-gray-800 text-white flex-none py-3 px-6 z-30 print:hidden text-center shadow-[0_-2px_4px_rgba(0,0,0,0.05)]">
-    <div class="text-xs text-gray-300 font-medium">
-      Made by <a href="https://atherpulse.in" target="_blank" rel="noopener noreferrer" class="text-white hover:text-blue-300 transition-colors font-semibold tracking-wide">Atherpulse Technologies</a> &copy; 2026
+    <div class="text-xs text-gray-300 font-medium flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-4">
+      <span>Made by <a href="https://atherpulse.in" target="_blank" rel="noopener noreferrer" class="text-white hover:text-blue-300 transition-colors font-semibold tracking-wide">Atherpulse Technologies</a> &copy; 2026</span>
+      <span id="offline-status" class="text-gray-400">Offline cache: checking</span>
     </div>
   </footer>
 

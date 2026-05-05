@@ -16,6 +16,15 @@
   <!-- Markdown-It library -->
   <script src="https://cdn.jsdelivr.net/npm/markdown-it@13.0.1/dist/markdown-it.min.js"></script>
 
+  <!-- MathJax for rendering math -->
+  <script>
+    window.MathJax = {
+      tex: { inlineMath: [['$', '$'], ['\\(', '\\)']] },
+      svg: { fontCache: 'global' }
+    };
+  </script>
+  <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+
   <!-- Tailwind CSS & Typography Plugin -->
   <script src="https://cdn.tailwindcss.com?plugins=typography"></script>
   <script>

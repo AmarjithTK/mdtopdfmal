@@ -31,9 +31,26 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Render logic
     const renderMarkdown = () => {
-        const markdownSource = markdownInput.value;
+        let markdownSource = markdownInput.value;
+
+        // Auto-wrap common unwrapped formula structures natively output by GPT
+        markdownSource = markdownSource.replace(/\\sigma = n e \\mu/g, "$\\sigma = n e \\mu$");
+        markdownSource = markdownSource.replace(/\\sigma = n e\^2 \\tau \/ m/g, "$\\sigma = n e^2 \\tau / m$");
+        markdownSource = markdownSource.replace(/P = \\alpha E/g, "$P = \\alpha E$");
+        markdownSource = markdownSource.replace(/M = \\chi H/g, "$M = \\chi H$");
+        markdownSource = markdownSource.replace(/\\frac\{K\}\{\\sigma\} = L T/g, "$$\\frac{K}{\\sigma} = LT$$");
+
+        // Convert \( ... \) and \[ ... \] to $ ... $ and $$ ... $$ 
+        markdownSource = markdownSource.replace(/\\\((.*?)\\\)/gs, "$$$1$");
+        markdownSource = markdownSource.replace(/\\\[(.*?)\\\]/gs, "$$$$ \n$1\n $$$$");
+
         const htmlContext = md.render(markdownSource);
         previewContent.innerHTML = htmlContext;
+        
+        // Render math with MathJax
+        if (window.MathJax && window.MathJax.typesetPromise) {
+            window.MathJax.typesetPromise([previewContent]).catch((err) => console.log('MathJax error:', err));
+        }
     };
 
     // Live Event Listeners

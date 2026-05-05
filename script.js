@@ -33,12 +33,27 @@ document.addEventListener('DOMContentLoaded', () => {
     const renderMarkdown = () => {
         let markdownSource = markdownInput.value;
 
-        // Auto-wrap common unwrapped formula structures natively output by GPT
-        markdownSource = markdownSource.replace(/\\sigma = n e \\mu/g, "$\\sigma = n e \\mu$");
-        markdownSource = markdownSource.replace(/\\sigma = n e\^2 \\tau \/ m/g, "$\\sigma = n e^2 \\tau / m$");
-        markdownSource = markdownSource.replace(/P = \\alpha E/g, "$P = \\alpha E$");
-        markdownSource = markdownSource.replace(/M = \\chi H/g, "$M = \\chi H$");
-        markdownSource = markdownSource.replace(/\\frac\{K\}\{\\sigma\} = L T/g, "$$\\frac{K}{\\sigma} = LT$$");
+        // General fallback for standalone equations (often on their own lines)
+        let lines = markdownSource.split('\n');
+        for (let i = 0; i < lines.length; i++) {
+            let line = lines[i].trim();
+            // Skip lines that are lists, headers, quotes or already contain backticks/dollars
+            if (/^([#*\->+]|\d+\.)\s/.test(line) || line.length === 0 || line.includes('$') || line.includes('`')) continue;
+
+            // Check if it's a standalone math equation
+            // (typically contains an equals sign '=' AND contains a slash '\', underscore '_', or caret '^')
+            const hasMathNotation = line.includes('\\') || line.includes('_') || line.includes('^');
+            const hasEquals = line.includes('=');
+            
+            // If it has math traits and is relatively short (not a huge paragraph of text), wrap it block math
+            if (hasEquals && hasMathNotation && line.length < 100) {
+                lines[i] = '$$ ' + line + ' $$';
+            }
+        }
+        markdownSource = lines.join('\n');
+
+        // Inline-wrap standalone powers/scientific notation if not wrapped yet (e.g. 10^-3, 10^{3}, 1.6 x 10^-19)
+        markdownSource = markdownSource.replace(/(?<![\$\`])\b(\d+(\.\d+)?\s*(x|×|\*)\s*)?10\^[{]?[-+]?\d+[}]?(?![\$\`])/g, "$$$&$$");
 
         // Convert \( ... \) and \[ ... \] to $ ... $ and $$ ... $$ 
         markdownSource = markdownSource.replace(/\\\((.*?)\\\)/gs, "$$$1$");

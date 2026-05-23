@@ -20,6 +20,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const fontFactorDisplay = document.getElementById('font-factor-display');
     const lineFactorSlider = document.getElementById('line-factor');
     const lineFactorDisplay = document.getElementById('line-factor-display');
+    const spaceFactorSlider = document.getElementById('space-factor');
+    const spaceFactorDisplay = document.getElementById('space-factor-display');
 
     // Sample Content Load
     markdownInput.value = `# മലയാളം Title 
@@ -145,9 +147,61 @@ document.addEventListener('DOMContentLoaded', () => {
         return normalized;
     };
 
+    const fixKatexEnvironments = (source) => {
+        const codeRegex = /(```[\s\S]*?```|`[^`]*`)/g;
+        const parts = source.split(codeRegex);
+
+        for (let i = 0; i < parts.length; i += 2) {
+            parts[i] = parts[i]
+                .replace(/\\begin\{align\*?\}/g, '\\begin{aligned}')
+                .replace(/\\end\{align\*?\}/g, '\\end{aligned}');
+        }
+
+        return parts.join('');
+    };
+
+    const applyLazyMathFallbacks = (source) => {
+        const splitRegex = /(```[\s\S]*?```|`[^`]*`|\$\$[\s\S]*?\$\$|\$[^$\n]*\$|\\\[[\s\S]*?\\\]|\\\([\s\S]*?\\\))/g;
+        const parts = source.split(splitRegex);
+
+        for (let i = 0; i < parts.length; i++) {
+            if (i % 2 !== 0) {
+                continue;
+            }
+
+            parts[i] = parts[i]
+                .replace(/([a-zA-Z0-9]+)\^(-?[0-9.]+|\([^)]+\))/g, (match, base, sup) => {
+                    if (sup.startsWith('(') && sup.endsWith(')')) {
+                        sup = sup.slice(1, -1);
+                    }
+
+                    return `${base}<sup>${sup}</sup>`;
+                })
+                .replace(/([A-Z][a-z]?)_([0-9]+)/g, '$1<sub>$2</sub>')
+                .replace(/([a-zA-Z])_(-?[0-9.]+|[ijkmnxyz]|\{[^}]+\})(?![a-zA-Z])/g, (match, base, sub) => {
+                    if (sub.startsWith('{') && sub.endsWith('}')) {
+                        sub = sub.slice(1, -1);
+                    }
+
+                    return `${base}<sub>${sub}</sub>`;
+                })
+                .replace(/<->/g, '&harr;')
+                .replace(/->/g, '&rarr;')
+                .replace(/<-/g, '&larr;')
+                .replace(/\+\/-/g, '&plusmn;')
+                .replace(/<=(?=[ \d\w])/g, '&le;')
+                .replace(/>=(?=[ \d\w])/g, '&ge;')
+                .replace(/!=/g, '&ne;');
+        }
+
+        return parts.join('');
+    };
+
     // Render logic
     const renderMarkdown = () => {
-        const markdownSource = normalizeMathDelimiters(markdownInput.value);
+        let markdownSource = fixKatexEnvironments(markdownInput.value);
+        markdownSource = normalizeMathDelimiters(markdownSource);
+        markdownSource = applyLazyMathFallbacks(markdownSource);
 
         previewContent.innerHTML = md.render(markdownSource);
     };
@@ -188,6 +242,15 @@ document.addEventListener('DOMContentLoaded', () => {
             const factor = e.target.value;
             lineFactorDisplay.textContent = Number(factor).toFixed(2) + 'x';
             previewContent.style.setProperty('--line-factor', factor);
+        });
+    }
+
+    // Block spacing factor change listener
+    if (spaceFactorSlider) {
+        spaceFactorSlider.addEventListener('input', (e) => {
+            const factor = e.target.value;
+            spaceFactorDisplay.textContent = Number(factor).toFixed(2) + 'x';
+            previewContent.style.setProperty('--space-factor', factor);
         });
     }
 

@@ -1,5 +1,49 @@
 /* Tailwind CSS Print Fallbacks */
 
+#preview-content {
+  --space-factor: 1;
+}
+
+#preview-content :where(p) {
+  margin-top: calc(0.4em * var(--space-factor, 1)) !important;
+  margin-bottom: calc(0.4em * var(--space-factor, 1)) !important;
+}
+
+#preview-content :where(h1) {
+  margin-top: calc(1.2em * var(--space-factor, 1)) !important;
+  margin-bottom: calc(0.4em * var(--space-factor, 1)) !important;
+}
+
+#preview-content :where(h2) {
+  margin-top: calc(1em * var(--space-factor, 1)) !important;
+  margin-bottom: calc(0.4em * var(--space-factor, 1)) !important;
+}
+
+#preview-content :where(h3, h4, h5, h6) {
+  margin-top: calc(0.8em * var(--space-factor, 1)) !important;
+  margin-bottom: calc(0.3em * var(--space-factor, 1)) !important;
+}
+
+#preview-content :where(ul, ol) {
+  margin-top: calc(0.3em * var(--space-factor, 1)) !important;
+  margin-bottom: calc(0.3em * var(--space-factor, 1)) !important;
+}
+
+#preview-content :where(li) {
+  margin-top: calc(0.1em * var(--space-factor, 1)) !important;
+  margin-bottom: calc(0.1em * var(--space-factor, 1)) !important;
+}
+
+#preview-content :where(blockquote, table, pre, section, .katex-display) {
+  margin-top: calc(0.5em * var(--space-factor, 1)) !important;
+  margin-bottom: calc(0.5em * var(--space-factor, 1)) !important;
+}
+
+#preview-content :where(hr) {
+  margin-top: calc(1em * var(--space-factor, 1)) !important;
+  margin-bottom: calc(1em * var(--space-factor, 1)) !important;
+}
+
 @media print {
   @page {
     size: A4;

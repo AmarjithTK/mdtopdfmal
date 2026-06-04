@@ -16,6 +16,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const previewContent = document.getElementById('preview-content');
     const exportBtn = document.getElementById('export-btn');
     const themeSelector = document.getElementById('theme-selector');
+    const fontSelector = document.getElementById('font-selector');
     const fontFactorSlider = document.getElementById('font-factor');
     const fontFactorDisplay = document.getElementById('font-factor-display');
     const lineFactorSlider = document.getElementById('line-factor');
@@ -224,6 +225,21 @@ document.addEventListener('DOMContentLoaded', () => {
             });
             // Add new theme
             previewContent.classList.add(e.target.value);
+
+            // Handle dark background for midnight theme
+            const a4Container = previewContent.closest('.bg-white') || previewContent.parentElement;
+            if (e.target.value === 'prose-dense_midnight') {
+                a4Container.style.backgroundColor = '#0f172a';
+            } else {
+                a4Container.style.backgroundColor = '';
+            }
+        });
+    }
+
+    // Font selector change listener
+    if (fontSelector) {
+        fontSelector.addEventListener('change', (e) => {
+            previewContent.style.setProperty('--preview-font', e.target.value);
         });
     }
 

@@ -2,6 +2,13 @@
 
 #preview-content {
   --space-factor: 1;
+  --preview-font: 'Noto Sans Malayalam', sans-serif;
+  font-family: var(--preview-font) !important;
+}
+
+#preview-content pre,
+#preview-content code {
+  font-variant-ligatures: contextual;
 }
 
 #preview-content :where(p) {

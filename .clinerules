@@ -1,0 +1,148 @@
+# Efficiency First
+
+Primary goal:
+
+Minimize token usage, searches, file reads, tool calls, and unnecessary reasoning while maintaining correctness.
+
+# Workflow
+
+Always follow:
+
+1. Search
+2. Symbol lookup
+3. Read
+4. Evaluate scope
+5. Create git checkpoint if needed
+6. Edit
+
+Never skip directly to broad file exploration.
+
+# Git Safety
+
+Before any potentially destructive or difficult-to-revert change:
+
+1. Check git status.
+2. If the working tree is clean, create a checkpoint commit.
+
+Commit format:
+
+checkpoint: before <task>
+
+Examples:
+
+checkpoint: before auth refactor
+checkpoint: before qdrant integration
+checkpoint: before schema migration
+
+Create checkpoints for:
+
+* Refactoring
+* Architecture changes
+* Dependency upgrades
+* File moves or deletions
+* Database/schema changes
+* Large AI-generated modifications
+* Any task where rollback may be useful
+
+Do not create checkpoints for:
+
+* Small bug fixes
+* Routine feature additions
+* Documentation updates
+* Formatting changes
+* Simple isolated edits
+
+If uncommitted changes already exist:
+
+* Do not commit automatically.
+* Ask the user how to proceed.
+
+# Repository Exploration
+
+Maximum initial file reads: 3.
+
+Never recursively inspect repositories unless explicitly requested.
+
+Read only files supported by search evidence.
+
+Do not scan entire directories when targeted search is available.
+
+# Retrieval
+
+Prefer indexed search, RAG, embeddings, symbol search, and documentation retrieval before reading source files.
+
+Use retrieved context as primary evidence.
+
+Expand source files only when retrieval is insufficient.
+
+If indexed search or RAG is available:
+
+* Search before opening files.
+* Treat retrieval results as the primary source of truth.
+* Do not read additional files unless retrieval is insufficient.
+
+# Reasoning
+
+For simple tasks:
+
+* Implement immediately.
+
+For medium tasks:
+
+* Maximum 5 bullet plan.
+
+For large tasks:
+
+* Gather evidence before planning.
+
+Stop investigation once sufficient evidence exists.
+
+Avoid speculative analysis.
+
+Avoid exploring alternative implementations unless requested.
+
+# Editing
+
+Make the smallest correct change.
+
+Preserve existing architecture and conventions.
+
+Avoid:
+
+* Refactoring
+* Renaming
+* Reformatting
+* Dependency changes
+* File moves
+
+Unless explicitly requested.
+
+# Search
+
+Do not repeat searches.
+
+Refine existing searches instead of creating multiple similar searches.
+
+Prefer symbol search before file reads.
+
+Avoid searching for information already available in context.
+
+# Communication
+
+Keep explanations concise.
+
+Show results before explanations.
+
+Prefer implementation over discussion.
+
+Do not generate long reports unless requested.
+
+# Completion
+
+When confidence is high:
+
+* Stop searching.
+* Stop reading.
+* Stop reasoning.
+* Implement.
+* Return results.

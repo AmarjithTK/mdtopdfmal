@@ -270,6 +270,31 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    // Page numbers toggle
+    const pageNumbersToggle = document.getElementById('page-numbers-toggle');
+    const pageNumbersStyle = document.getElementById('page-numbers-css');
+    if (pageNumbersToggle && pageNumbersStyle) {
+        pageNumbersToggle.addEventListener('click', () => {
+            const isOn = pageNumbersToggle.getAttribute('data-toggled') === 'true';
+            const newState = !isOn;
+            pageNumbersToggle.setAttribute('data-toggled', String(newState));
+            pageNumbersToggle.setAttribute('aria-checked', String(newState));
+            pageNumbersStyle.disabled = !newState;
+            const knob = pageNumbersToggle.querySelector('span');
+            if (newState) {
+                knob.classList.add('translate-x-4');
+                knob.classList.remove('translate-x-0');
+                pageNumbersToggle.classList.add('bg-emerald-600');
+                pageNumbersToggle.classList.remove('bg-gray-300');
+            } else {
+                knob.classList.remove('translate-x-4');
+                knob.classList.add('translate-x-0');
+                pageNumbersToggle.classList.remove('bg-emerald-600');
+                pageNumbersToggle.classList.add('bg-gray-300');
+            }
+        });
+    }
+
     // Export PDF listener
     exportBtn.addEventListener('click', () => {
         window.print();

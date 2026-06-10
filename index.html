@@ -12,6 +12,9 @@
   
   <link rel="icon" href="favicon.ico">
   <link rel="stylesheet" href="style.css">
+
+  <!-- Font Awesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   
   <!-- Markdown-It library -->
   <script src="https://cdn.jsdelivr.net/npm/markdown-it@13.0.1/dist/markdown-it.min.js"></script>
@@ -672,35 +675,35 @@
     }
   </script>
 </head>
-<body class="bg-white flex flex-col h-auto overflow-auto md:h-screen md:overflow-hidden text-gray-800 font-sans print:overflow-visible print:bg-white print:h-auto">
+<body class="bg-gray-50 flex flex-col h-auto overflow-auto md:h-screen md:overflow-hidden text-gray-800 font-sans print:overflow-visible print:bg-white print:h-auto">
 
-<!-- Header with Explanation -->
-<header class="bg-white border-b border-purple-300 flex-none print:hidden z-30 shadow-sm relative">
-  <div class="px-4 py-5 md:px-6 max-w-full mx-auto flex flex-col xl:flex-row xl:items-center justify-between gap-5">
+<!-- Header -->
+<header class="bg-emerald-900 border-b border-emerald-700 flex-none print:hidden z-30 relative">
+  <div class="px-4 py-4 md:px-6 max-w-full mx-auto flex flex-col xl:flex-row xl:items-center justify-between gap-4">
     
     <!-- Title Area -->
     <div>
-      <h1 class="text-2xl md:text-3xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-purple-900 to-violet-800 tracking-tight flex items-center gap-3">
-        <svg class="w-8 h-8 text-purple-800 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg>
+      <h1 class="text-2xl md:text-3xl font-extrabold text-emerald-50 tracking-tight flex items-center gap-3">
+        <i class="fa-solid fa-file-export text-emerald-400 text-xl flex-shrink-0"></i>
         Atherpulse Exporter
       </h1>
-      <p class="text-sm text-purple-600 mt-1.5 font-medium ml-11">Beautiful, dense, print-ready document conversion.</p>
+      <p class="text-sm text-emerald-300 mt-1 font-medium ml-10">Markdown to print-ready PDF — with Malayalam support.</p>
     </div>
     
     <!-- Info Cards -->
     <div class="flex flex-col sm:flex-row gap-3 text-sm flex-shrink-0">
-      <div class="bg-purple-50 border border-purple-300 rounded-xl p-3 sm:w-64 flex gap-3 shadow-sm hover:shadow transition-shadow">
-        <div class="text-xl flex-shrink-0">💡</div>
+      <div class="bg-emerald-800/60 border border-emerald-700 rounded-lg p-3 sm:w-64 flex gap-3">
+        <div class="flex-shrink-0 text-emerald-400 mt-0.5"><i class="fa-solid fa-lightbulb text-lg"></i></div>
         <div>
-          <strong class="text-purple-950 block mb-0.5">How to write</strong>
-          <span class="text-purple-800/90 leading-snug block text-xs">Paste your ChatGPT markdown on the left, pick a beautiful theme, and click download.</span>
+          <strong class="text-emerald-100 block mb-0.5 text-xs uppercase tracking-wide">How to use</strong>
+          <span class="text-emerald-300/80 leading-snug block text-xs">Paste your Markdown on the left, pick a theme, and export.</span>
         </div>
       </div>
-      <div class="bg-purple-50 border border-purple-300 rounded-xl p-3 sm:w-72 flex gap-3 shadow-sm hover:shadow transition-shadow">
-        <div class="text-xl flex-shrink-0">✨</div>
+      <div class="bg-emerald-800/60 border border-emerald-700 rounded-lg p-3 sm:w-72 flex gap-3">
+        <div class="flex-shrink-0 text-emerald-400 mt-0.5"><i class="fa-solid fa-star text-lg"></i></div>
         <div>
-          <strong class="text-purple-950 block mb-0.5">Key Features</strong>
-          <span class="text-purple-800/90 leading-snug block text-xs">Full English & Malayalam support, premium Google fonts, beautiful styling, and perfect A4 formatting.</span>
+          <strong class="text-emerald-100 block mb-0.5 text-xs uppercase tracking-wide">Key Features</strong>
+          <span class="text-emerald-300/80 leading-snug block text-xs">English & Malayalam, premium fonts, beautiful themes, and clean A4 export.</span>
         </div>
       </div>
     </div>
@@ -710,12 +713,12 @@
 
   <main class="flex-1 flex flex-col md:flex-row min-h-0 w-full print:block print:h-auto print:w-auto relative">
     <!-- Sidebar -->
-    <aside class="w-full md:w-64 flex-none bg-white border-b md:border-b-0 md:border-r border-purple-300 flex flex-col p-4 md:p-6 print:hidden shadow-sm z-20">
-      <h2 class="text-xs font-bold text-purple-800 uppercase tracking-widest mb-4 md:mb-6">PDF Export Settings</h2>
+    <aside class="w-full md:w-64 flex-none bg-white border-b md:border-b-0 md:border-r border-emerald-200 flex flex-col p-4 md:p-6 print:hidden z-20">
+      <h2 class="text-xs font-bold text-emerald-800 uppercase tracking-widest mb-4 md:mb-6 flex items-center gap-2"><i class="fa-solid fa-sliders text-emerald-600"></i> Export Settings</h2>
       
       <div class="mb-4 md:mb-6 flex flex-col gap-2">
-        <label class="text-xs font-semibold text-purple-800 block mb-1">Design Style:</label>
-        <select id="theme-selector" class="w-full bg-purple-50 border border-purple-300 text-purple-900 rounded p-2 text-sm focus:outline-none focus:ring-2 focus:ring-purple-600 focus:border-transparent cursor-pointer">
+        <label class="text-xs font-semibold text-emerald-700 block mb-1">Design Style</label>
+        <select id="theme-selector" class="w-full bg-gray-50 border border-emerald-200 text-gray-800 rounded-md p-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent cursor-pointer">
           <option value="prose-dense_minimal">Minimalist</option>
           <option value="prose-dense_blue">Blue Accent (Corporate)</option>
           <option value="prose-dense_classic">Classic Red (Serif)</option>
@@ -737,8 +740,8 @@
       </div>
 
       <div class="mb-4 md:mb-6 flex flex-col gap-2">
-        <label class="text-xs font-semibold text-purple-800 block mb-1">Font Family:</label>
-        <select id="font-selector" class="w-full bg-purple-50 border border-purple-300 text-purple-900 rounded p-2 text-sm focus:outline-none focus:ring-2 focus:ring-purple-600 focus:border-transparent cursor-pointer">
+        <label class="text-xs font-semibold text-emerald-700 block mb-1">Font Family</label>
+        <select id="font-selector" class="w-full bg-gray-50 border border-emerald-200 text-gray-800 rounded-md p-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent cursor-pointer">
           <optgroup label="── Malayalam ──">
             <option value="'Noto Sans Malayalam', sans-serif" selected>Noto Sans Malayalam</option>
             <option value="'Noto Serif Malayalam', serif">Noto Serif Malayalam</option>
@@ -774,67 +777,93 @@
 
       <div class="mb-4 md:mb-6 flex flex-col gap-2">
         <div class="flex justify-between items-center mb-1">
-          <label for="font-factor" class="text-xs font-semibold text-purple-800 block">Font Size Factor:</label>
-          <span id="font-factor-display" class="text-xs font-bold text-purple-900 bg-purple-100 px-2 py-0.5 rounded">1.0x</span>
+          <label for="font-factor" class="text-xs font-semibold text-emerald-700 block">Font Size</label>
+          <span id="font-factor-display" class="text-xs font-bold text-emerald-800 bg-emerald-100 px-2 py-0.5 rounded-md">1.0x</span>
         </div>
-        <input type="range" id="font-factor" min="0.7" max="1.5" step="0.05" value="1.0" class="w-full accent-purple-700 cursor-pointer h-1.5 bg-purple-200 rounded-lg appearance-none">
+        <input type="range" id="font-factor" min="0.7" max="1.5" step="0.05" value="1.0" class="w-full accent-emerald-600 cursor-pointer h-1.5 bg-emerald-200 rounded-lg appearance-none">
       </div>
 
       <div class="mb-4 md:mb-6 flex flex-col gap-2">
         <div class="flex justify-between items-center mb-1">
-          <label for="line-factor" class="text-xs font-semibold text-purple-800 block">Line Height:</label>
-          <span id="line-factor-display" class="text-xs font-bold text-purple-900 bg-purple-100 px-2 py-0.5 rounded">1.0x</span>
+          <label for="line-factor" class="text-xs font-semibold text-emerald-700 block">Line Height</label>
+          <span id="line-factor-display" class="text-xs font-bold text-emerald-800 bg-emerald-100 px-2 py-0.5 rounded-md">1.0x</span>
         </div>
-        <input type="range" id="line-factor" min="0.6" max="1.35" step="0.02" value="1.0" class="w-full accent-purple-700 cursor-pointer h-1.5 bg-purple-200 rounded-lg appearance-none">
+        <input type="range" id="line-factor" min="0.6" max="1.35" step="0.02" value="1.0" class="w-full accent-emerald-600 cursor-pointer h-1.5 bg-emerald-200 rounded-lg appearance-none">
       </div>
 
       <div class="mb-4 md:mb-6 flex flex-col gap-2">
         <div class="flex justify-between items-center mb-1">
-          <label for="space-factor" class="text-xs font-semibold text-purple-800 block">Block Spacing:</label>
-          <span id="space-factor-display" class="text-xs font-bold text-purple-900 bg-purple-100 px-2 py-0.5 rounded">1.0x</span>
+          <label for="space-factor" class="text-xs font-semibold text-emerald-700 block">Block Spacing</label>
+          <span id="space-factor-display" class="text-xs font-bold text-emerald-800 bg-emerald-100 px-2 py-0.5 rounded-md">1.0x</span>
         </div>
-        <input type="range" id="space-factor" min="0.15" max="1.4" step="0.05" value="1.0" class="w-full accent-purple-700 cursor-pointer h-1.5 bg-purple-200 rounded-lg appearance-none">
+        <input type="range" id="space-factor" min="0.15" max="1.4" step="0.05" value="1.0" class="w-full accent-emerald-600 cursor-pointer h-1.5 bg-emerald-200 rounded-lg appearance-none">
       </div>
 
       <div class="mb-4 md:mb-6 flex flex-col gap-3 hidden md:flex">
-        <div class="bg-purple-100 text-purple-900 text-xs p-3 rounded-lg border border-purple-300 leading-relaxed shadow-sm">
-          <strong>Pro-Tip:</strong> In your browser print dialog, uncheck <em>"Headers and footers"</em> to remove dates & URLs for a perfectly clean PDF.
+        <div class="bg-emerald-50 text-emerald-800 text-xs p-3 rounded-lg border border-emerald-200 leading-relaxed">
+          <i class="fa-solid fa-circle-info text-emerald-600 mr-1"></i>
+          <strong>Tip:</strong> In your browser print dialog, uncheck <em>"Headers and footers"</em> for a clean PDF.
         </div>
       </div>
       
+      <!-- Hidden style for page numbers — toggled via JS -->
+      <style id="page-numbers-css">
+        @media print {
+          @page {
+            margin: 8mm 8mm 14mm 8mm;
+            @bottom-center {
+              content: counter(page);
+              font-family: 'Poppins', sans-serif;
+              font-size: 9pt;
+              color: #6b7280;
+              font-variant-numeric: tabular-nums;
+            }
+          }
+        }
+      </style>
+
+      <div class="mb-3 md:mb-4 flex items-center justify-between print:hidden">
+        <label for="page-numbers-toggle" class="text-xs font-bold text-emerald-700 uppercase tracking-widest cursor-pointer select-none flex items-center gap-1.5"><i class="fa-solid fa-hashtag text-emerald-600 text-xs"></i> Page Numbers</label>
+        <button id="page-numbers-toggle" type="button" role="switch" aria-checked="true"
+          class="relative inline-flex h-5 w-9 shrink-0 cursor-pointer rounded-full border-2 border-transparent bg-emerald-600 transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2"
+          data-toggled="true">
+          <span class="pointer-events-none inline-block h-4 w-4 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out translate-x-4"></span>
+        </button>
+      </div>
+
       <div class="mt-4 md:mt-auto flex flex-col gap-2">
-        <button id="export-btn" class="w-full bg-purple-900 hover:bg-purple-800 text-white font-medium py-2.5 px-4 rounded-lg transition-colors shadow flex items-center justify-center gap-2 text-sm">
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path></svg>
+        <button id="export-btn" class="w-full bg-emerald-800 hover:bg-emerald-700 text-white font-medium py-2.5 px-4 rounded-lg transition-colors flex items-center justify-center gap-2 text-sm">
+          <i class="fa-solid fa-file-arrow-down text-sm"></i>
           Download PDF
         </button>
       </div>
     </aside>
 
     <!-- Markdown Editor -->
-    <div class="w-full md:w-auto md:flex-1 h-64 md:h-auto bg-white border-b md:border-b-0 md:border-r border-purple-300 print:hidden flex flex-col min-w-0 z-10 shadow-[4px_0_10px_-5px_rgba(0,0,0,0.05)]">
-      <div class="flex items-center justify-between border-b border-purple-300 px-4 md:px-5 py-2.5 md:py-3 bg-purple-50/80">
-        <span class="text-xs font-bold text-purple-800 uppercase tracking-widest">📝 Editor</span>
+    <div class="w-full md:w-auto md:flex-1 h-64 md:h-auto bg-white border-b md:border-b-0 md:border-r border-emerald-200 print:hidden flex flex-col min-w-0 z-10">
+      <div class="flex items-center justify-between border-b border-emerald-200 px-4 md:px-5 py-2.5 md:py-3 bg-emerald-50/60">
+        <span class="text-xs font-bold text-emerald-800 uppercase tracking-widest flex items-center gap-1.5"><i class="fa-solid fa-pen-to-square text-emerald-600 text-xs"></i> Editor</span>
       </div>
-      <textarea id="markdown-input" class="flex-1 w-full p-4 md:p-6 resize-none focus:outline-none font-mono text-sm text-purple-900 leading-relaxed bg-[#fdfdfd] placeholder-purple-500" placeholder="Type your Markdown here (മലയാളം)..."></textarea>
+      <textarea id="markdown-input" class="flex-1 w-full p-4 md:p-6 resize-none focus:outline-none font-mono text-sm text-gray-800 leading-relaxed bg-white placeholder-gray-400" placeholder="Type your Markdown here (മലയാളം)..."></textarea>
     </div>
 
     <!-- Live Preview -->
-    <div class="w-full md:w-auto md:flex-[1.5] min-h-[500px] md:min-h-0 overflow-y-auto bg-purple-50/40 min-w-0 print-preview-bg print:overflow-visible print:bg-transparent print:w-full print:block print:flex-none">
-      <div class="flex items-center justify-between border-b border-purple-300 px-4 md:px-5 py-2.5 md:py-3 bg-white sticky top-0 z-10 shadow-[0_1px_2px_rgba(0,0,0,0.02)] print:hidden">
-        <span class="text-xs font-bold text-purple-800 uppercase tracking-widest">📄 A4 Preview</span>
+    <div class="w-full md:w-auto md:flex-[1.5] min-h-[500px] md:min-h-0 overflow-y-auto bg-gray-100 min-w-0 print-preview-bg print:overflow-visible print:bg-transparent print:w-full print:block print:flex-none">
+      <div class="flex items-center justify-between border-b border-emerald-200 px-4 md:px-5 py-2.5 md:py-3 bg-white sticky top-0 z-10 print:hidden">
+        <span class="text-xs font-bold text-emerald-800 uppercase tracking-widest flex items-center gap-1.5"><i class="fa-solid fa-eye text-emerald-600 text-xs"></i> A4 Preview</span>
       </div>
       
       <!-- The A4 shaped container -->
-      <div class="p-4 md:p-8 mx-auto my-4 md:my-6 max-w-full md:max-w-[210mm] min-h-[297mm] bg-white shadow-md print-reset-container border border-gray-200 print:shadow-none print:border-none print:m-0 print:p-0 print:max-w-full">
+      <div class="p-4 md:p-8 mx-auto my-4 md:my-6 max-w-full md:max-w-[210mm] min-h-[297mm] bg-white shadow-sm print-reset-container border border-gray-200 print:shadow-none print:border-none print:m-0 print:p-0 print:max-w-full">
         <div id="preview-content" class="prose prose-dense_minimal max-w-none"></div>
       </div>
     </div>
   </main>
 
   <!-- Footer -->
-  <footer class="bg-purple-950 text-purple-300 flex-none py-3 px-6 z-30 print:hidden text-center shadow-[0_-2px_4px_rgba(0,0,0,0.05)]">
-    <div class="text-xs text-purple-400 font-medium">
-      Made by <a href="https://atherpulse.in" target="_blank" rel="noopener noreferrer" class="text-white hover:text-purple-200 transition-colors font-semibold tracking-wide">Atherpulse Technologies</a> &copy; 2026
+  <footer class="bg-emerald-950 text-emerald-400 flex-none py-3 px-6 z-30 print:hidden text-center">
+    <div class="text-xs text-emerald-400 font-medium">
+      <i class="fa-solid fa-code text-emerald-600 mr-1"></i> Built by <a href="https://atherpulse.in" target="_blank" rel="noopener noreferrer" class="text-emerald-200 hover:text-white transition-colors font-semibold tracking-wide">Atherpulse Technologies</a> &copy; 2026
     </div>
   </footer>
 

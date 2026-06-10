@@ -74,7 +74,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const hasMathOperator = /[=<>]|\\[a-zA-Z]+/.test(trimmed);
         const hasMathVariable = /[A-Za-z]_[A-Za-z0-9]|\([A-Za-z]\)|\\[a-zA-Z]+|[Δ∫∑√π∞≤≥]/.test(trimmed);
-        const onlyMathCharacters = /^[A-Za-z0-9\\{}()[\].,_\s+\-*/^=<>|Δ∫∑√π∞≤≥]+$/.test(trimmed);
+        const onlyMathCharacters = /^[A-Za-z0-9\\{}()[\].,_\s+\-*/^=<>|;:!Δ∫∑√π∞≤≥]+$/.test(trimmed);
         const hasPlainWord = /[A-Za-z]{3,}/.test(trimmed.replace(/\\[a-zA-Z]+/g, ''));
 
         return hasMathOperator && hasMathVariable && onlyMathCharacters && !hasPlainWord;

@@ -81,11 +81,22 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     const normalizeMathDelimiters = (source) => {
-        let normalized = source
-            .replace(/\\\(/g, '$')
-            .replace(/\\\)/g, '$')
-            .replace(/\\\[/g, '$$$$')
-            .replace(/\\\]/g, '$$$$');
+        // Split by HTML tags and code blocks so we don't process content inside them
+        const tagSplit = /(<[^>]*>|```[\s\S]*?```|`[^`]*`)/g;
+        const tagParts = source.split(tagSplit);
+
+        for (let i = 0; i < tagParts.length; i++) {
+            // Even indices = non-tag content, odd indices = HTML tags/code
+            if (i % 2 !== 0) continue;
+
+            tagParts[i] = tagParts[i]
+                .replace(/\\\(/g, '$')
+                .replace(/\\\)/g, '$')
+                .replace(/\\\[/g, '$$$$')
+                .replace(/\\\]/g, '$$$$');
+        }
+
+        let normalized = tagParts.join('');
 
         // Some pasted ChatGPT/browser text loses the backslash from \[...\],
         // leaving standalone [ ... ] math blocks. Recover only LaTeX-looking ones.
@@ -162,7 +173,7 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     const applyLazyMathFallbacks = (source) => {
-        const splitRegex = /(```[\s\S]*?```|`[^`]*`|\$\$[\s\S]*?\$\$|\$[^$\n]*\$|\\\[[\s\S]*?\\\]|\\\([\s\S]*?\\\))/g;
+        const splitRegex = /(```[\s\S]*?```|`[^`]*`|<[^>]*>|\$\$[\s\S]*?\$\$|\$[^$\n]*\$|\\\[[\s\S]*?\\\]|\\\([\s\S]*?\\\))/g;
         const parts = source.split(splitRegex);
 
         for (let i = 0; i < parts.length; i++) {
@@ -200,11 +211,24 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Render logic
     const renderMarkdown = () => {
-        let markdownSource = fixKatexEnvironments(markdownInput.value);
-        markdownSource = normalizeMathDelimiters(markdownSource);
-        markdownSource = applyLazyMathFallbacks(markdownSource);
+        try {
+            let markdownSource = fixKatexEnvironments(markdownInput.value);
+            markdownSource = normalizeMathDelimiters(markdownSource);
+            markdownSource = applyLazyMathFallbacks(markdownSource);
 
-        previewContent.innerHTML = md.render(markdownSource);
+            previewContent.innerHTML = md.render(markdownSource);
+        } catch (e) {
+            console.error('Render error:', e);
+            // Fallback: render without math pre-processing
+            try {
+                previewContent.innerHTML = md.render(markdownInput.value);
+            } catch (e2) {
+                console.error('Fallback render error:', e2);
+                previewContent.innerHTML = `<div style="color: #dc2626; padding: 1em; border: 1px solid #fca5a5; border-radius: 4px; background: #fef2f2;">
+                    <strong>⚠️ Render Error:</strong> ${e2.message}
+                </div>`;
+            }
+        }
     };
 
     // Live Event Listeners

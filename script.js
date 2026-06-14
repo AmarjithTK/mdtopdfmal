@@ -41,7 +41,7 @@ document.addEventListener('DOMContentLoaded', () => {
 ഈ ഭാഗം **ബോൾഡ്** ആണ്, ഇത് *ഇറ്റാലിക്സ്* ആണ്.`;
 
     const looksLikeLatex = (value) => {
-        return /\\[a-zA-Z]+|[_^{}=]|[∫∑√π∞≤≥]/.test(value);
+        return /\\[a-zA-Z]+|[_^{}=]|[∫∑√π∞≤≥Δ∀∃∈∋∩∪⊂⊃∇∂]/.test(value);
     };
 
     const cleanLatexBlock = (value) => {
@@ -73,8 +73,8 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         const hasMathOperator = /[=<>]|\\[a-zA-Z]+/.test(trimmed);
-        const hasMathVariable = /[A-Za-z]_[A-Za-z0-9]|\([A-Za-z]\)|\\[a-zA-Z]+|[Δ∫∑√π∞≤≥]/.test(trimmed);
-        const onlyMathCharacters = /^[A-Za-z0-9\\{}()[\].,_\s+\-*/^=<>|;:!Δ∫∑√π∞≤≥]+$/.test(trimmed);
+        const hasMathVariable = /[A-Za-z]_[A-Za-z0-9]|\([A-Za-z]\)|\\[a-zA-Z]+|[Δ∫∑√π∞≤≥∀∃∈∋∩∪⊂⊃∇∂]/.test(trimmed);
+        const onlyMathCharacters = /^[A-Za-z0-9\\{}()[\].,_\s+\-*/^=<>|;:!Δ∫∑√π∞≤≥∀∃∈∋∩∪⊂⊃∇∂]+$/.test(trimmed);
         const hasPlainWord = /[A-Za-z]{3,}/.test(trimmed.replace(/\\[a-zA-Z]+/g, ''));
 
         return hasMathOperator && hasMathVariable && onlyMathCharacters && !hasPlainWord;
@@ -90,10 +90,13 @@ document.addEventListener('DOMContentLoaded', () => {
             if (i % 2 !== 0) continue;
 
             tagParts[i] = tagParts[i]
-                .replace(/\\\(/g, '$')
-                .replace(/\\\)/g, '$')
-                .replace(/\\\[/g, '$$$$')
-                .replace(/\\\]/g, '$$$$');
+                // Convert \(...\) → $...$  (single-backslash, common ChatGPT output)
+                // Negative lookbehind prevents matching \\\( (escaped backslash)
+                .replace(/(?<!\\)\\\(/g, '$')
+                .replace(/(?<!\\)\\\)/g, '$')
+                // Convert \[...\] → $$...$$  (single-backslash)
+                .replace(/(?<!\\)\\\[/g, '$$$$')
+                .replace(/(?<!\\)\\\]/g, '$$$$');
         }
 
         let normalized = tagParts.join('');
@@ -181,6 +184,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 continue;
             }
 
+            // Superscript: a^n → <sup>n</sup>
             parts[i] = parts[i]
                 .replace(/([a-zA-Z0-9]+)\^(-?[0-9.]+|\([^)]+\))/g, (match, base, sup) => {
                     if (sup.startsWith('(') && sup.endsWith(')')) {
@@ -189,6 +193,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
                     return `${base}<sup>${sup}</sup>`;
                 })
+                // Subscript: A_0 → <sub>0</sub>, x_i → <sub>i</sub>
                 .replace(/([A-Z][a-z]?)_([0-9]+)/g, '$1<sub>$2</sub>')
                 .replace(/([a-zA-Z])_(-?[0-9.]+|[ijkmnxyz]|\{[^}]+\})(?![a-zA-Z])/g, (match, base, sub) => {
                     if (sub.startsWith('{') && sub.endsWith('}')) {
@@ -196,14 +201,20 @@ document.addEventListener('DOMContentLoaded', () => {
                     }
 
                     return `${base}<sub>${sub}</sub>`;
-                })
-                .replace(/<->/g, '&harr;')
-                .replace(/->/g, '&rarr;')
-                .replace(/<-/g, '&larr;')
-                .replace(/\+\/-/g, '&plusmn;')
-                .replace(/<=(?=[ \d\w])/g, '&le;')
-                .replace(/>=(?=[ \d\w])/g, '&ge;')
-                .replace(/!=/g, '&ne;');
+                });
+
+            // Arrow/relational replacements — only in segments with math signals
+            // to avoid false positives in regular prose (e.g. "if (x != null)").
+            if (/\\[a-zA-Z]+\b|[∫∑√π∞≤≥Δ∀∃∈∋∩∪⊂⊃∇∂ℝℕℂℚℤ]/.test(parts[i])) {
+                parts[i] = parts[i]
+                    .replace(/<->/g, '&harr;')
+                    .replace(/->/g, '&rarr;')
+                    .replace(/<-/g, '&larr;')
+                    .replace(/\+\/-/g, '&plusmn;')
+                    .replace(/<=(?=[ \d\w])/g, '&le;')
+                    .replace(/>=(?=[ \d\w])/g, '&ge;')
+                    .replace(/!=/g, '&ne;');
+            }
         }
 
         return parts.join('');

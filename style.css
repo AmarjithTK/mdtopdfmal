@@ -84,3 +84,70 @@
     break-inside: avoid !important;
   }
 }
+
+/* === HTML-heavy content support (SOP documents, inline styles) === */
+
+/* Allow align="center" on tables to work */
+#preview-content table[align="center"] {
+  margin-left: auto !important;
+  margin-right: auto !important;
+}
+
+/* Allow align="center" on headings, paragraphs, divs */
+#preview-content [align="center"] {
+  text-align: center !important;
+}
+
+#preview-content [align="left"] {
+  text-align: left !important;
+}
+
+#preview-content [align="right"] {
+  text-align: right !important;
+}
+
+/* Let inline border-collapse take effect */
+#preview-content table[style*="border-collapse"] {
+  border-collapse: collapse !important;
+}
+
+/* Prevent prose from shrinking table cells that have explicit padding in style */
+#preview-content td[style*="padding"],
+#preview-content th[style*="padding"] {
+  padding: revert !important;
+}
+
+/* Let inline borders on cells take precedence over prose bottom-border */
+#preview-content td[style*="border"],
+#preview-content th[style*="border"] {
+  border: revert !important;
+}
+
+/* Let inline background colors on cells appear */
+#preview-content td[style*="background"],
+#preview-content th[style*="background"],
+#preview-content tr[style*="background"] {
+  background: revert !important;
+}
+
+/* Let inline background on divs work (notice boxes, callouts) */
+#preview-content div[style*="background"] {
+  background: revert !important;
+  border-radius: revert !important;
+}
+
+/* Let inline text colors on cells appear */
+#preview-content td[style*="color"],
+#preview-content th[style*="color"] {
+  color: revert !important;
+}
+
+/* Ensure inline width on tables is honored */
+#preview-content table[style*="width"] {
+  width: revert !important;
+}
+
+/* Ensure border-collapse on tables */
+#preview-content table[style*="collapse"] {
+  border-collapse: collapse !important;
+}

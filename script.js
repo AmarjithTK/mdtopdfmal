@@ -295,6 +295,99 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    // ---- Print handler: beforeprint/afterprint for reliable print control ----
+    // CSS @media print alone is unreliable because Tailwind CDN injects generated
+    // CSS at runtime after style.css loads, creating cascade conflicts.
+    // Inline styles (element.style.xxx) have the highest specificity.
+
+    window.addEventListener('beforeprint', () => {
+        // 1. Blast-hide all UI chrome — inline style beats any CSS
+        document.querySelectorAll(
+            'header, footer, aside, textarea, select, button, input, label, optgroup, option'
+        ).forEach(el => {
+            el.dataset.printOrigDisplay = el.style.display;
+            el.style.display = 'none';
+        });
+
+        // 2. Clip horizontal overflow at root level
+        document.documentElement.style.overflowX = 'hidden';
+        document.body.style.overflowX = 'hidden';
+        document.body.style.maxWidth = '100%';
+
+        // 3. Force wrapping inside preview content
+        const preview = document.getElementById('preview-content');
+        if (!preview) return;
+        
+        preview.style.maxWidth = '100%';
+        preview.style.width = '100%';
+        preview.style.overflowWrap = 'break-word';
+        preview.style.wordBreak = 'break-word';
+
+        preview.querySelectorAll('*').forEach(el => {
+            el.style.maxWidth = '100%';
+            el.style.overflowWrap = 'break-word';
+            el.style.wordBreak = 'break-word';
+        });
+
+        // 4. Force pre/code to wrap
+        preview.querySelectorAll('pre, code').forEach(el => {
+            el.style.whiteSpace = 'pre-wrap';
+        });
+
+        // 5. Fixed table layout prevents column overflow
+        preview.querySelectorAll('table').forEach(el => {
+            el.style.tableLayout = 'fixed';
+            el.style.maxWidth = '100%';
+        });
+
+        // 6. Scale images/embeds to fit
+        preview.querySelectorAll('img, svg, video, iframe, .katex-display').forEach(el => {
+            el.style.maxWidth = '100%';
+            el.style.height = 'auto';
+        });
+    });
+
+    window.addEventListener('afterprint', () => {
+        // Restore hidden elements
+        document.querySelectorAll('[data-print-orig-display]').forEach(el => {
+            el.style.display = el.dataset.printOrigDisplay || '';
+            delete el.dataset.printOrigDisplay;
+        });
+
+        // Restore root
+        document.documentElement.style.overflowX = '';
+        document.body.style.overflowX = '';
+        document.body.style.maxWidth = '';
+
+        // Restore preview content inline styles
+        const preview = document.getElementById('preview-content');
+        if (!preview) return;
+
+        preview.style.maxWidth = '';
+        preview.style.width = '';
+        preview.style.overflowWrap = '';
+        preview.style.wordBreak = '';
+
+        preview.querySelectorAll('*').forEach(el => {
+            el.style.maxWidth = '';
+            el.style.overflowWrap = '';
+            el.style.wordBreak = '';
+        });
+
+        preview.querySelectorAll('pre, code').forEach(el => {
+            el.style.whiteSpace = '';
+        });
+
+        preview.querySelectorAll('table').forEach(el => {
+            el.style.tableLayout = '';
+        });
+
+        preview.querySelectorAll('img, svg, video, iframe, .katex-display').forEach(el => {
+            el.style.maxWidth = '';
+            el.style.height = '';
+        });
+    });
+
     // Export PDF listener
     exportBtn.addEventListener('click', () => {
         window.print();

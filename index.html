@@ -21,7 +21,10 @@
 
   <!-- KaTeX CSS for beautiful math rendering -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/copy-tex.min.css">
   <script src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/mhchem.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/copy-tex.min.js"></script>
   <!-- Markdown-It math plugin powered by KaTeX -->
   <script src="https://cdn.jsdelivr.net/npm/markdown-it-texmath/texmath.min.js"></script>
 
@@ -867,6 +870,9 @@
     </div>
   </footer>
 
+  <!-- New enhanced parser (hybrid crossnote + GPT-X recovery) -->
+  <script src="script2.js"></script>
+  <!-- Original parser (kept for reference; script2.js is used if loaded first) -->
   <script src="script.js"></script>
 </body>
 </html>

@@ -51,6 +51,49 @@
   margin-bottom: calc(1em * var(--space-factor, 1)) !important;
 }
 
+/* ---- KaTeX Math Display Wrapping & Auto-fit ---- */
+#preview-content .katex-display {
+  display: block !important;
+  max-width: 100% !important;
+  margin: 0.75em 0 !important;
+  text-align: center;
+  overflow-x: auto;
+  overflow-y: hidden;
+  -webkit-overflow-scrolling: touch;
+}
+
+#preview-content .katex-display > .katex {
+  display: inline-block !important;
+  max-width: 100% !important;
+  white-space: normal !important;
+  text-align: center;
+}
+
+#preview-content .katex-display > .katex > .katex-html {
+  display: inline-block !important;
+  max-width: 100% !important;
+  white-space: normal !important;
+  text-align: center;
+  line-height: 1.6;
+}
+
+#preview-content .katex-display > .katex > .katex-html > .base {
+  display: inline-block !important;
+  margin-top: 2px;
+  margin-bottom: 2px;
+  white-space: nowrap;
+}
+
+#preview-content .katex {
+  max-width: 100%;
+  white-space: normal !important;
+}
+
+#preview-content .katex > .katex-html {
+  white-space: normal !important;
+}
+
+
 @media print {
   /* ---- Blast-hide all UI elements — belt AND suspenders ---- */
   html, body {
@@ -103,10 +146,19 @@
   #preview-content img,
   #preview-content svg,
   #preview-content video,
-  #preview-content iframe,
-  #preview-content .katex-display {
+  #preview-content iframe {
     max-width: 100% !important;
     height: auto !important;
+  }
+
+  /* Math equations scale and never slice across page breaks */
+  #preview-content .katex-display,
+  #preview-content section:has(> eqn),
+  #preview-content section.eqno {
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+    max-width: 100% !important;
+    overflow: visible !important;
   }
 
   /* Prevent tables from overflowing */
@@ -123,8 +175,7 @@
 
   /* Ensure block elements never exceed page width */
   #preview-content pre,
-  #preview-content blockquote,
-  #preview-content .katex-display {
+  #preview-content blockquote {
     overflow-x: hidden !important;
   }
 

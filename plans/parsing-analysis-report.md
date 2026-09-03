@@ -1,281 +1,252 @@
-# Markdown Parsing Analysis — `mdtopdfmal`
+# Crossnote Parser Code Analysis — Complete Findings
 
 ## Overview
 
-Analysis of the markdown parsing pipeline in [`script.js`](../script.js), compared against techniques used in **VSCode Markdown Preview Enhanced** (MPE) extension (v0.8.30), which serves as a reference for ChatGPT/LLM-generated markdown rendering best practices.
-
-## Current Architecture
-
-### Parser Stack
-
-```
-index.html:20-26
-markdown-it v13.0.1  ──>  texmath plugin  ──>  KaTeX v0.16.8
-```
-
-### Pre-processing Pipeline (3-phase)
-
-1. [`fixKatexEnvironments()`](../script.js:162-173) — converts `\begin{align}` → `\begin{aligned}` for KaTeX
-2. [`normalizeMathDelimiters()`](../script.js:83-160) — the main math normalization (delimiters, lost-backslash recovery, standalone line detection)
-3. [`applyLazyMathFallbacks()`](../script.js:175-210) — plain-text math → HTML (superscripts, subscripts, arrows)
-
-### Error Handling
-
-Two-tier fallback ([`script.js:213-231`](../script.js:213-231)):
-1. Try full pipeline → render
-2. On failure, fall back to raw markdown-it render
-3. On second failure, show error div in preview
+All parser code found in the **crossnote** repository at `/home/starwalker/acodingspace/mdtopdfmal/crossnote/`. This report catalogs every file and module that handles markdown parsing/transformation, organized by topic. The code is production-grade from the **Markdown Preview Enhanced** VS Code extension (crossnote v0.9.31).
 
 ---
 
-## Parsing Mechanisms Found
+## 1. Core Parsing Pipeline
 
-### 1. `looksLikeLatex()` — [`script.js:43-45`](../script.js:43-45)
+### 1.1 Markdown-it Instance & Feature Registration
+[`crossnote/src/notebook/index.ts:218-243`](../crossnote/src/notebook/index.ts:218)
 
-```js
-/\\[a-zA-Z]+|[_^{}=]|[∫∑√π∞≤≥]/.test(value)
+All features are registered on a single `MarkdownIt` instance:
+```
+md.use(MarkdownItFootnote)
+md.use(MarkdownItSub)
+md.use(MarkdownItSup)
+md.use(MarkdownItDeflist)
+md.use(MarkdownItAbbr)
+md.use(MarkdownItMark)
+useMarkdownItCodeFences(md)
+useMarkdownItColonFencedCodeBlocks(md)
+useMarkdownItCurlyBracketAttributes(md)
+useMarkdownItCriticMarkup(md, this)
+useMarkdownItEmoji(md, this)
+useMarkdownItHTML5Embed(md, this)
+useMarkdownItMath(md, this)
+useMarkdownItWikilink(md, this)
+useMarkdownAdmonition(md)
+useMarkdownCallout(md)
+useMarkdownItSourceMap(md)
+useMarkdownItTag(md, this)
+useMarkdownItWidget(md, this)
 ```
 
-**What it does:** Heuristic to determine if text looks like LaTeX.
+### 1.2 Main Render Pipeline (`parseMD`)
+[`crossnote/src/markdown-engine/index.ts:2741-2960`](../crossnote/src/markdown-engine/index.ts:2741)
 
-**Edge cases:**
-- Missing many Unicode math symbols: `∈∉∋∩∪⊂⊃∑∏∇∂ℕℝℂℚℤ∀∃∅∧∨⇒⇔⊗⊕`
-- `_` alone in text (e.g., `variable_name`) triggers true
-- `^` in URLs or caret notation triggers true
-
-### 2. `cleanLatexBlock()` — [`script.js:47-59`](../script.js:47-59)
-
-**What it does:** Cleans up math block content. Handles the `=====` separator pattern (e.g., `x = 5 / === / y = 3`).
-
-**Edge cases:**
-- Only handles exactly **3-line** blocks with middle line being all `=`
-- `==` pattern could clash with markdown `==highlight==` syntax or `==` comparison operators
-- `filter(Boolean)` removes blank lines — this is good but could lose intentional whitespace
-
-### 3. `isStandaloneMathLine()` — [`script.js:61-81`](../script.js:61-81)
-
-**What it does:** Detects if a line is standalone math that should be wrapped in `$$...$$`.
-
-**Filters (returns false if):**
-- Empty line
-- Line > 160 characters
-- Contains `$` or backtick
-- Starts with markdown block syntax: `#`, `>`, `-`, `*`, `1.`
-- Ends with sentence punctuation: `: . ! ?`
-
-**Positive checks (all must be true):**
-- Has math operator: `=`, `<`, `>`, `\command`
-- Has math variable: letter_subscript, `\command`, or Unicode math symbol
-- Only contains math-allowed characters: `A-Za-z0-9\{}()[].,_\s+\-*/^=<>|;:!` + Unicode set `Δ∫∑√π∞≤≥`
-- No plain 3+ letter word after removing `\command` patterns
-
-**Edge cases:**
-- `x = 5` works — has `=` operator, variable `x`, all math chars, no 3-letter word
-- `sin(x) = 5` — after removing `\sin`, this leaves `(x) = 5` which has no 3-letter word. **CORRECT.**
-- But `sin(x) + cos(x) = 5` — after removing `\sin` and `\cos`, leaves `(x) + (x) = 5`. **CORRECT.**
-- `x^2 + C` — "C" is a single letter, no 3-letter word. `C` is not caught by `[A-Za-z]{3,}`. **CORRECT.**
-- `add x + 5` — after removing `\add` (nothing removed), "add" is 3 letters. `hasPlainWord = true`. **CORRECTLY** returns false.
-- `variable_name + 5` — underscore is in the regex, all chars are math-allowed. `looksLikeLatex` returns true because of `_`. But `variable` is a 12-letter word. After removing `\variable` (nothing removed), "variable" is 12 letters. `hasPlainWord = true`. **CORRECTLY** returns false.
-- `H₂O` in Unicode (subscript ₂) — `₂` is NOT in the allowed regex set. Returns false. **MAY BE WRONG** — Unicode subscripts should be allowed.
-
-### 4. `normalizeMathDelimiters()` — [`script.js:83-160`](../script.js:83-160)
-
-#### Phase A: HTML/code protection — [`script.js:85`](../script.js:85)
-```js
-const tagSplit = /(<[^>]*>|```[\s\S]*?```|`[^`]*`)/g;
-```
-Even indices = content, odd indices = HTML/code. Only processes even indices.
-
-**Edge cases:**
-- Fails on nested backticks: `` `code `inner` more`  ``
-- Fails on triple backtick with trailing whitespace: `` ``` `` (space after)
-- `[^>]*` in HTML tag regex can match across lines if there's no `>` — but this is HTML-tagged content, so acceptable
-
-#### Phase B: Delimiter normalization — [`script.js:92-97`](../script.js:92-97)
-```js
-.replace(/\\\(/g, '$')
-.replace(/\\\)/g, '$')
-.replace(/\\\[/g, '$$$$')
-.replace(/\\\]/g, '$$$$')
-```
-
-**Note:** `'$$$$'` in JavaScript replace = `'$$'` in output (double dollar for display math).
-
-**Edge cases:**
-- `\\\(` (double backslash + paren) → first `\\` escapes the backslash, resulting `\(` which becomes `$` — **wrong**, should be literal `\(`
-- `\\\[` (double backslash + bracket) → same issue, becomes `$$` instead of literal `\[`
-- `\\(` with only one backslash (common ChatGPT paste artifact) → the `\\` is seen as escaped backslash, leaving `(`. Both `\\` patterns aren't covered.
-
-#### Phase C: Lost-backslash recovery — [`script.js:103-134`](../script.js:103-134)
-
-Three regex patterns to catch `[...]` without backslash (common ChatGPT paste):
-
-**Multi-line block:**
-```js
-/^([ \t]*)\[\s*\n([\s\S]*?)\n[ \t]*\][ \t]*$/gm
-```
-
-**Edge cases:**
-- `[` with content immediately on same line not matched (by design — goes to next)
-- Empty `[]` with newlines still matches
-- Nested brackets in content could cause issues
-
-**Single-line block:**
-```js
-/^([ \t]*)\[([^\]\n]+)\][ \t]*$/gm
-```
-
-**Edge cases:**
-- One `[` and one `]` are required — good
-- `[x]` as markdown task list syntax already filtered by `looksLikeLatex`
-- `[1]` reference would be filtered by `looksLikeLatex` (no LaTeX pattern)
-
-**Inline:**
-```js
-/(^|[^\w\]$])\[([^\]\n]+)\](?!\()(?=$|[^\w\[$])/gm
-```
-
-**Edge cases:**
-- Negative lookahead `(?!\()` prevents matching markdown links `[text](url)` — **smart**
-- `[x^2]` matched, `looksLikeLatex` passes, result: `$x^2$` — **correct**
-- `[E=mc^2]` → `$E=mc^2$` — **correct**
-- `[see appendix]` — `looksLikeLatex` filters it out — **correct**
-
-#### Phase D: Standalone line wrapping — [`script.js:136-157`](../script.js:136-157)
-
-**Edge cases:**
-- `$$` already present on line — skips (handled before `isStandaloneMathLine`)
-- Inside `$$...$$` block — tracked via `inDollarMathBlock` flag — **correct**
-- `x^2` standalone → wrapped in `$$x^2$$` — **correct**
-- Malayalam text line → `isStandaloneMathLine` returns false because `onlyMathCharacters` uses `[A-Za-z]` range — **correct**
-
-### 5. `applyLazyMathFallbacks()` — [`script.js:175-210`](../script.js:175-210)
-
-```js
-const splitRegex = /(```[\s\S]*?```|`[^`]*`|<[^>]*>|\$\$[\s\S]*?\$\$|\$[^$\n]*\$|\\\[[\s\S]*?\\\]|\\\([\s\S]*?\\\))/g;
-```
-
-**Protected segments:** code blocks, inline code, HTML tags, `$$...$$`, `$...$`, `\[...\]`, `\(...\)`
-
-**Transformations:**
-| Pattern | Replacement | Context |
-|---------|-------------|---------|
-| `a^n` | `<sup>n</sup>` | Anywhere in non-protected text |
-| `A_0` | `<sub>0</sub>` | Single uppercase + underscore + number |
-| `a_ijk` | `<sub>ijk</sub>` | Letter + underscore + `{...}` or letter/number |
-| `->` | `&rarr;` | Everywhere in non-protected text |
-| `<-` | `&larr;` | Everywhere in non-protected text |
-| `<->` | `&harr;` | Everywhere in non-protected text |
-| `+/-` | `&plusmn;` | Everywhere in non-protected text |
-| `<=` | `&le;` | Everywhere (when followed by space/digit/word) |
-| `>=` | `&ge;` | Everywhere (when followed by space/digit/word) |
-| `!=` | `&ne;` | Everywhere in non-protected text |
-
-**Critical edge cases:**
-
-1. **`_` over-matching**: `([a-zA-Z])_(-?[0-9.]+|[ijkmnxyz]|\{[^}]+\})` — matches `x_y` if y is `i,j,k,m,n,x,y,z`. In practice, `x_i` (variable with index i) — **this is intentional** for math-like notation.
-
-2. **Arrow replacements too broad**: `"the relationship -> is important"` → `"the relationship &rarr; is important"` — **incorrect** in non-math context. Should only apply where there's math context nearby.
-
-3. **`<=` in comparison**: `if (x <= 5)` → `if (x &le; 5)` — potentially wrong outside math context.
-
-4. **`!=` everywhere**: `a != b` → `a &ne; b` — same issue.
-
-5. **`\$\$` vs `$$`**: The split regex doesn't protect `\$\$` (escaped dollar). Content inside `\$\$` would be processed.
-
-### 6. `fixKatexEnvironments()` — [`script.js:162-173`](../script.js:162-173)
-
-Simple replacement: `\begin{align}` → `\begin{aligned}` etc.
-
-**Edge cases:**
-- Only handles `align` and `align*`, not `gather`, `multline`, `split`, `array`
-- Only `align*?` pattern — `align` with star or without
-- Code-protected via same `(```...```|`...``)` regex
+Execution order:
+1. `onWillParseMarkdown` hook (user callback)
+2. `transformMarkdown()` — pre-processing (imports, anchors, headings, colon fences, math protection, tags, block-ids)
+3. Front-matter processing
+4. `notebook.renderMarkdown()` — markdown-it / pandoc / markdown_yo render
+5. [TOC] replacement
+6. `enhanceWithFencedMath($)` — ` ```math ` fence → KaTeX/MathJax
+7. `enhanceWithFencedDiagrams(...)` — diagram rendering (mermaid, plantuml, etc.)
+8. `enhanceWithFencedCodeChunks(...)` — code execution
+9. `enhanceWithCodeBlockStyling($)` — prism syntax highlighting
+10. `enhanceWithResolvedImagePaths(...)` — relative image path resolution
+11. `enhanceWithExtendedTableSyntax($)` — merged cells
+12. `enhanceWithEmbeddedWikilinks(...)` — `![[...]]` transclusion
 
 ---
 
-## Edge Cases Summary Table
+## 2. Math Parsing (Most Relevant for Formula Filtering)
 
-| # | Issue | Severity | File:Line |
-|---|-------|----------|-----------|
-| 1 | Missing Unicode math symbols in `looksLikeLatex` | Medium | [`script.js:43`](../script.js:43) |
-| 2 | `\\\(` / `\\\[` double-escape not handled | Medium | [`script.js:92-96`](../script.js:92:96) |
-| 3 | Arrow `->` etc. over-replace in non-math text | Low-Medium | [`script.js:200-206`](../script.js:200-206) |
-| 4 | `<=` / `>=` / `!=` replace in code-like text | Low | [`script.js:204-206`](../script.js:204-206) |
-| 5 | Unicode subscripts (₂, ₃) not in allowed char set | Low | [`script.js:77`](../script.js:77) |
-| 6 | Backtick with trailing space not matched | Low | [`script.js:85,176`](../script.js:85:176) |
-| 7 | `$$$` triple dollar not handled | Low | [`script.js:176`](../script.js:176) |
-| 8 | Only `align` env converted, not `gather`/`multline` | Low | [`script.js:168`](../script.js:168) |
-| 9 | `=====` pattern fragile (only 3-line blocks) | Low | [`script.js:54`](../script.js:54) |
-| 10 | No `split` regex for `\\\[` with newlines before `\]` | Low | [`script.js:176`](../script.js:176) |
+### 2.1 Block & Inline Math Rules
+[`crossnote/src/custom-markdown-it-features/math.ts:1-343`](../crossnote/src/custom-markdown-it-features/math.ts)
+
+**Block rule** (lines 14-76): Registered before `lheading` to prevent Setext heading splitting on `$$` blocks with `=` inside. Scans forward for closing delimiter, handles `\` escapes, produces `math_block` token.
+
+**Inline rule** (lines 78-144): Checks `mathBlockDelimiters` first (block), then `mathInlineDelimiters` (inline). Handles `\` escapes. Produces `math` token with `meta.displayMode`.
+
+**Key features:**
+- Configurable delimiters (not just `$$`/`$`)
+- Backslash escape handling inside math
+- `html_block` recovery (lines 172-286): `renderMathInHtml()` splits HTML by `<code>/<pre>/<script>/<style>` tags, processes unprotected segments for math delimiters, reassembles. Fixes regression where math inside HTML tables wasn't rendered.
+
+### 2.2 Math Renderer
+[`crossnote/src/renderers/parse-math.ts:1-59`](../crossnote/src/renderers/parse-math.ts)
+
+```
+KaTeX  → renderToString(content, { displayMode, ...katexConfig })
+MathJax → <span class="mathjax-exps">escaped(content)</span>
+None    → ''
+Error   → <span style="color:#ee7f49; font-weight:500;">error message</span>
+```
+
+### 2.3 Math in Fenced Code Blocks
+[`crossnote/src/render-enhancers/fenced-math.ts:1-97`](../crossnote/src/render-enhancers/fenced-math.ts)
+
+Handles ````math` fence blocks. Supports attributes: `literate`, `hide`, `output_first`. Renders via `parseMath` in display mode.
 
 ---
 
-## MPE Techniques That Could Be Adopted
+## 3. Code & Diagram Parsing
 
-### 1. Customizable Math Delimiters
-MPE allows configuring multiple inline/block delimiter pairs ([`config.ts:72-73`](../vscode-markdown-preview-enhanced/src/config.ts:72:73)):
-```
-mathInlineDelimiters: [["$","$"], ["\\(","\\)"]]
-mathBlockDelimiters: [["$$","$$"], ["\\[","\\]"]]
-```
+### 3.1 Code Fence Renderer
+[`crossnote/src/custom-markdown-it-features/code-fences.ts:1-50`](../crossnote/src/custom-markdown-it-features/code-fences.ts)
 
-### 2. Syntax Plugins (from [`package.nls.json`](../vscode-markdown-preview-enhanced/package.nls.json:57:57))
-Referenced in MPE config:
-- **CriticMarkup** — `{++inserted++}`, `{--deleted--}`, `{~~ ~>~~}` for track changes
-- **Extended tables** — merged cells via `^^` and `\\`
-- **Emoji shortcodes** — `:smile:` → 😊
-- **WikiLinks** — `[[Page]]` and `[[Page#^block-id]]`
-- **Tags** — `#tag-name` rendered as clickable pills
-- **Frontmatter** — YAML `---` blocks rendered as metadata
-- **Code chunk execution** — ` ```python {cmd=true} ` with output capture
+Shared renderer for backtick and colon fences. Produces `<pre data-role="codeBlock" data-info="..." data-parsed-info="..." data-normalized-info="...">`. Parses fence info via `parseBlockInfo()` and normalizes via `normalizeBlockInfo()`.
 
-### 3. Diagram Support (from [`diagrams.md`](../vscode-markdown-preview-enhanced/test/markdown/diagrams.md))
-Fenced code blocks with specific language names:
-- ` ```mermaid ` — Mermaid diagrams
-- ` ```puml ` / ` ```plantuml ` — PlantUML
-- ` ```viz ` / ` ```dot ` — GraphViz
-- ` ```vega ` / ` ```vega-lite ` — Vega charts
-- ` ```wavedrom ` — WaveDrom timing diagrams
-- ` ```ditaa {kroki=true} ` — ASCII art → diagrams via Kroki
+### 3.2 Colon-Fenced Code Blocks (`:::`)
+[`crossnote/src/custom-markdown-it-features/colon-fenced-code-blocks.ts:1-247`](../crossnote/src/custom-markdown-it-features/colon-fenced-code-blocks.ts)
 
-### 4. Code Block Attributes (from [`code-chunks.md`](../vscode-markdown-preview-enhanced/test/markdown/code-chunks.md))
-```markdown
-```js {cmd=node output=html hide=true}
-```
-```
-Attributes like `{cmd=true}`, `{hide=true}`, `{line-numbers}`, `{id="..." continue="..."}`
+Two behaviors based on info string:
+- **Code/diagram fence**: `:::mermaid`, `:::puml`, `:::wavedrom`, `:::bitfield`, `:::graphviz`, `:::vega`, `:::vega-lite`, `:::wsd`, `:::d2`, `:::tikz` → rendered as code fence
+- **Fenced div**: Everything else → `<div class="name">...</div>` (Pandoc-compatible)
 
-### 5. Block References
-`^block-id` markers on paragraphs (from [`extension-common.ts:170`](../vscode-markdown-preview-enhanced/src/extension-common.ts:170:170))
+### 3.3 Diagram Rendering
+[`crossnote/src/render-enhancers/fenced-diagrams.ts:1-466`](../crossnote/src/render-enhancers/fenced-diagrams.ts)
 
-### 6. HTML5 Embed
-Auto-convert image/video/audio links to embed tags.
+Full diagram pipeline. Supports: mermaid, plantuml/puml, wavedrom, bitfield, graphviz/viz/dot, vega/vega-lite, wsd, d2, tikz. Kroki support for unknown diagram types. Caching via checksums.
+
+### 3.4 Code Block Info Parser
+[`crossnote/src/lib/block-info/parse-block-info.ts:1-83`](../crossnote/src/lib/block-info/parse-block-info.ts)
+
+Parses fence info string `language {attr1=val1 .class #id}` into `BlockInfo { language, attributes }`.
+
+### 3.5 Block Attributes Parser
+[`crossnote/src/lib/block-attributes/parseBlockAttributes.ts:1-199`](../crossnote/src/lib/block-attributes/parseBlockAttributes.ts)
+
+Full attribute parser supporting:
+- `.class1.class2` → `class`
+- `#id`
+- `key=value`
+- `key="quoted value"`
+- `key=['a','b']` arrays
+- `key=(parenthesized value)`
+- Bare flags → `true`
+- Type normalization (boolean, number, string)
 
 ---
 
-## Recommendations for Parser Improvements
+## 4. Extended Syntax Features (Beneficial for GPT-X Output)
 
-### Must-Fix (medium severity)
-1. **Add missing Unicode math symbols** to `looksLikeLatex` and `onlyMathCharacters` regex in `isStandaloneMathLine`:
-   ```
-   ∈∉∋∩∪⊂⊃∑∏∇∂ℕℝℂℚℤ∀∃∅∧∨⇒⇔⊗⊕
-   ```
+### 4.1 WikiLinks (`[[...]]`)
+[`crossnote/src/custom-markdown-it-features/wikilink.ts:1-152`](../crossnote/src/custom-markdown-it-features/wikilink.ts)
 
-2. **Handle `\\\(` / `\\\[` double-escape**: Skip replacement if preceded by another backslash.
+Supports:
+- `[[Page]]`
+- `[[Page#Heading]]`
+- `[[Page^block-id]]`
+- `[[Page#Heading^block-id]]`
+- `[[Page|Display Text]]`
 
-### Nice-to-Have
-3. **Add `\\(` single-backslash recovery** (common ChatGPT output where one backslash is lost): `\(` → `$`, `\[` → `$$` when not already preceded by backslash.
+Also see transformer lines 778-813 for `![[...]]` embed syntax (images, markdown files, block transclusion).
 
-4. **Add `gather`/`multline`/`split` environment conversion** to `fixKatexEnvironments()`.
+### 4.2 Tag Syntax (`#tag`)
+[`crossnote/src/custom-markdown-it-features/tag.ts:1-101`](../crossnote/src/custom-markdown-it-features/tag.ts)
 
-5. **Add Mermaid diagram support** via ` ```mermaid ` fenced code block → render with Mermaid JS library.
+Obsidian-style `#tag-name` and `#parent/child`. Smart context detection:
+- Skips if preceded by word char, `/`, `&`, `?`
+- Skips inside `{...}` attribute blocks
+- Renders as `<a class="tag" data-tag="..." href="tag://...">#tag</a>`
 
-6. **Add CriticMarkup syntax** as a pre-processing pass.
+### 4.3 CriticMarkup
+[`crossnote/src/custom-markdown-it-features/critic-markup.ts:1-91`](../crossnote/src/custom-markdown-it-features/critic-markup.ts)
 
-7. **Add emoji shortcode rendering** via a simple map or markdown-it plugin.
+| Syntax | HTML |
+|--------|------|
+| `{--text--}` | `<del>text</del>` |
+| `{++text++}` | `<ins>text</ins>` |
+| `{~~old~>new~~}` | `<del>old</del><ins>new</ins>` |
+| `{==text==}` | `<mark>text</mark>` |
+| `{>>text<<}` | `<span style="display:none">text</span>` |
 
-8. **Narrow `applyLazyMathFallbacks` scope**: The `->`, `<-`, `<=`, `>=`, `!=` replacements should only trigger when the surrounding context looks like math (has nearby math operators or variables).
+### 4.4 Curly Bracket Attributes (`{...}`)
+[`crossnote/src/custom-markdown-it-features/curly-bracket-attributes.ts:1-135`](../crossnote/src/custom-markdown-it-features/curly-bracket-attributes.ts)
 
-### Performance
-9. **Consolidate regex splitting**: Currently three functions each do their own split on code blocks/HTML. A single pass that extracts protected segments, processes content, then re-inserts would be more efficient.
+Attaches `{...}` attributes to headings, images, and links.
+
+### 4.5 Emoji Shortcodes
+[`crossnote/src/custom-markdown-it-features/emoji.ts`](../crossnote/src/custom-markdown-it-features/emoji.ts)
+
+`md.use(MarkdownItEmoji)` with full emoji + fontawesome definitions.
+
+### 4.6 HTML5 Embed
+[`crossnote/src/custom-markdown-it-features/html5-embed.ts`](../crossnote/src/custom-markdown-it-features/html5-embed.ts)
+
+Auto-embeds video/audio based on file extension. Uses `markdown-it-html5-embed`.
+
+---
+
+## 5. Pre-Processing Transformer
+[`crossnote/src/markdown-engine/transformer.ts:1-1479`](../crossnote/src/markdown-engine/transformer.ts)
+
+Line-by-line markdown transformer handling:
+
+| Feature | Lines | Description |
+|---------|-------|-------------|
+| Colon fences (`:::`) | 310-430 | Code/diagram fence vs fenced div |
+| Backtick code blocks | 432-488 | Data-source-line injection |
+| Math display block protection | 490-521 | Skips transformations inside `$$...$$` |
+| HTML comments / custom subjects | 535-621 | `<!-- pagebreak -->`, `<!-- slide -->` |
+| Headings | 623-725 | ID generation, class, attributes |
+| [TOC] | 727-746 | Table of contents marker |
+| Task list checkboxes | 749-771 | `[x]` → `<input checked>` |
+| `@import` / file import | 773-1229 | Markdown, images, CSS/JS, CSV, PDF, diagrams |
+| `![[wikilink]]` embed | 1232-1270 | Inline wikilink embeds |
+| `^block-id` | 1276-1281 | Block reference markers |
+| `#tag` syntax | 1283-1331 | For non-markdown-it parsers |
+| Front-matter | 1460-1478 | YAML `---...---` extraction |
+
+---
+
+## 6. Block Info Types & Normalization
+
+### BlockInfo Type
+[`crossnote/src/lib/block-info/types.ts`](../crossnote/src/lib/block-info/types.ts)
+```ts
+type BlockInfo = {
+  language: string;
+  attributes: BlockAttributes;
+};
+```
+
+### BlockAttributes Type
+[`crossnote/src/lib/block-attributes/types.ts`](../crossnote/src/lib/block-attributes/types.ts)
+```ts
+type BlockAttributes = Record<string, boolean | number | string | string[]>;
+```
+
+### Normalization
+[`crossnote/src/lib/block-info/normalize-block-info.ts`](../crossnote/src/lib/block-info/normalize-block-info.ts) — Lowercases language, normalizes attributes.
+
+[`crossnote/src/lib/block-attributes/normalizeBlockAttributes.ts`](../crossnote/src/lib/block-attributes/normalizeBlockAttributes.ts) — Attribute type normalization.
+
+---
+
+## 7. Summary: What to Adopt for `mdtopdfmal`
+
+### High Priority (formula/math handling from GPT-X)
+
+| Module | File | What It Does |
+|--------|------|-------------|
+| Math block/inline rules | `crossnote/src/custom-markdown-it-features/math.ts` | Block math detection before lheading, inline math with backslash escape handling |
+| renderMathInHtml | `crossnote/src/custom-markdown-it-features/math.ts:214-286` | Recover math inside HTML tables/blocks |
+| parse-math renderer | `crossnote/src/renderers/parse-math.ts` | KaTeX/MathJax rendering with error handling |
+| Configurable delimiters | `crossnote/src/notebook/types.ts:342-348` | Multiple math delimiter pairs |
+| Math display block protection | `crossnote/src/markdown-engine/transformer.ts:490-521` | Skip line transformations inside `$$...$$` |
+
+### Medium Priority (GPT-X markdown cleanup)
+
+| Module | File | What It Does |
+|--------|------|-------------|
+| `isStandaloneMathLine` equivalent | `script.js:61-81` | Already exists in user app |
+| `looksLikeLatex` improvements | `script.js:43-45` | Needs Unicode math symbols added |
+| Block attributes parser | `crossnote/src/lib/block-attributes/parseBlockAttributes.ts` | Parse `{...}` attribute blocks |
+| Block info parser | `crossnote/src/lib/block-info/parse-block-info.ts` | Parse fence info strings |
+
+### Low Priority (nice-to-have)
+
+| Module | File | What It Does |
+|--------|------|-------------|
+| CriticMarkup | `crossnote/src/custom-markdown-it-features/critic-markup.ts` | Track changes syntax |
+| WikiLinks | `crossnote/src/custom-markdown-it-features/wikilink.ts` | `[[Page]]` links |
+| Tags | `crossnote/src/custom-markdown-it-features/tag.ts` | `#tag` syntax |
+| Emoji | `crossnote/src/custom-markdown-it-features/emoji.ts` | `:emoji:` shortcodes |
+| Fenced diagrams | `crossnote/src/render-enhancers/fenced-diagrams.ts` | Mermaid, PlantUML, etc. |
+| Transclusions | `crossnote/src/markdown-engine/transformer.ts:1232-1270` | `![[embed]]` |

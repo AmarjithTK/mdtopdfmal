@@ -1264,12 +1264,12 @@
 }
 
 .settings-sidebar::-webkit-scrollbar {
-  width: 4px;
-  height: 4px;
+  width: 1px;
+  height: 1px;
 }
 
 .settings-sidebar::-webkit-scrollbar-thumb {
-  border: 1px solid transparent;
+  border: 0;
 }
 
 .settings-sidebar {

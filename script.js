@@ -12,20 +12,8 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    const markdownInput = document.getElementById('markdown-input');
-    const previewContent = document.getElementById('preview-content');
-    const exportBtn = document.getElementById('export-btn');
-    const themeSelector = document.getElementById('theme-selector');
-    const fontSelector = document.getElementById('font-selector');
-    const fontFactorSlider = document.getElementById('font-factor');
-    const fontFactorDisplay = document.getElementById('font-factor-display');
-    const lineFactorSlider = document.getElementById('line-factor');
-    const lineFactorDisplay = document.getElementById('line-factor-display');
-    const spaceFactorSlider = document.getElementById('space-factor');
-    const spaceFactorDisplay = document.getElementById('space-factor-display');
-
-    // Sample Content Load
-    markdownInput.value = `# മലയാളം Title 
+    const STORAGE_KEY = 'atherpulse-exporter.preferences.v1';
+    const DEFAULT_MARKDOWN = `# മലയാളം Title 
 
 ഇത് ഒരു സാമ്പിൾ വാചകമാണ്. (This is a sample text.)
 
@@ -39,18 +27,194 @@ document.addEventListener('DOMContentLoaded', () => {
 ## സബ് ഹെഡിംഗ്
 
 ഈ ഭാഗം **ബോൾഡ്** ആണ്, ഇത് *ഇറ്റാലിക്സ്* ആണ്.`;
+    const defaultPreferences = {
+        colorMode: 'light',
+        theme: 'prose-dense_minimal',
+        font: "'Inter', sans-serif",
+        fontFactor: '1.0',
+        lineFactor: '1.0',
+        spaceFactor: '1.0',
+        alignment: 'left',
+        pageNumbers: true,
+        pageNumberSize: '9',
+        pageNumberPosition: 'bottom-center',
+        pageMargin: '8',
+        content: null
+    };
+
+    const readPreferences = () => {
+        try {
+            const stored = window.localStorage.getItem(STORAGE_KEY);
+            return stored ? JSON.parse(stored) : {};
+        } catch (error) {
+            console.warn('Could not read saved preferences:', error);
+            return {};
+        }
+    };
+
+    const preferences = { ...defaultPreferences, ...readPreferences() };
+    const markdownInput = document.getElementById('markdown-input');
+    const previewContent = document.getElementById('preview-content');
+    const exportBtn = document.getElementById('export-btn');
+    const themeSelector = document.getElementById('theme-selector');
+    const fontSelector = document.getElementById('font-selector');
+    const fontFactorSlider = document.getElementById('font-factor');
+    const fontFactorDisplay = document.getElementById('font-factor-display');
+    const lineFactorSlider = document.getElementById('line-factor');
+    const lineFactorDisplay = document.getElementById('line-factor-display');
+    const spaceFactorSlider = document.getElementById('space-factor');
+    const spaceFactorDisplay = document.getElementById('space-factor-display');
+    const colorModeToggle = document.getElementById('color-mode-toggle');
+    const pageNumbersToggle = document.getElementById('page-numbers-toggle');
+    const pageNumbersStyle = document.getElementById('page-numbers-css');
+    const pageMarginSlider = document.getElementById('page-margin');
+    const pageMarginDisplay = document.getElementById('page-margin-display');
+    const pageNumberSizeSlider = document.getElementById('page-number-size');
+    const pageNumberSizeDisplay = document.getElementById('page-number-size-display');
+    const pageNumberPosition = document.getElementById('page-number-position');
+
+    const persistPreferences = () => {
+        preferences.content = markdownInput.value;
+        try {
+            window.localStorage.setItem(STORAGE_KEY, JSON.stringify(preferences));
+        } catch (error) {
+            console.warn('Could not save preferences:', error);
+        }
+    };
+
+    const setColorMode = (mode, persist = true) => {
+        const normalizedMode = mode === 'dark' ? 'dark' : 'light';
+        document.body.dataset.colorMode = normalizedMode;
+        document.documentElement.style.colorScheme = normalizedMode;
+        preferences.colorMode = normalizedMode;
+        if (colorModeToggle) {
+            const icon = colorModeToggle.querySelector('i');
+            const label = colorModeToggle.querySelector('span');
+            const darkMode = normalizedMode === 'dark';
+            colorModeToggle.setAttribute('aria-pressed', String(darkMode));
+            colorModeToggle.setAttribute('title', darkMode ? 'Switch to light mode' : 'Switch to dark mode');
+            if (icon) {
+                icon.className = darkMode ? 'fa-solid fa-sun' : 'fa-solid fa-moon';
+            }
+            if (label) {
+                label.textContent = darkMode ? 'Light mode' : 'Dark mode';
+            }
+        }
+        if (persist) persistPreferences();
+    };
+
+    const updatePageNumberCSS = () => {
+        const margin = Number(pageMarginSlider.value);
+        const size = Number(pageNumberSizeSlider.value);
+        const position = pageNumberPosition.value;
+        const font = fontSelector.value || defaultPreferences.font;
+        const textAlign = position.endsWith('left')
+            ? 'left'
+            : position.endsWith('right')
+                ? 'right'
+                : 'center';
+        const marginBox = `@${position}`;
+
+        // CSS page margin boxes are the browser-supported context where
+        // counter(page) increments for every printed sheet. Fixed DOM elements
+        // render, but Chromium resolves counter(page) to zero there.
+        pageNumbersStyle.textContent = `@media print {
+  @page {
+    size: A4;
+    margin: ${margin}mm;
+    ${marginBox} {
+      content: counter(page);
+      color: #6b7280;
+      font-family: ${font};
+      font-size: ${size}pt;
+      font-weight: 500;
+      line-height: 1.2;
+      padding: 2pt 0;
+      text-align: ${textAlign};
+      white-space: nowrap;
+      overflow: visible;
+    }
+  }
+  #print-page-number {
+    display: none !important;
+  }
+}`;
+        pageNumbersStyle.disabled = pageNumbersToggle.getAttribute('data-toggled') !== 'true';
+        document.documentElement.style.setProperty('--paper-margin', `${margin}mm`);
+        pageMarginDisplay.textContent = `${margin}mm`;
+        pageNumberSizeDisplay.textContent = `${size}pt`;
+    };
+
+    // Restore saved controls before the first render.
+    markdownInput.value = preferences.content ?? DEFAULT_MARKDOWN;
+    themeSelector.value = preferences.theme;
+    fontSelector.value = preferences.font;
+    fontFactorSlider.value = preferences.fontFactor;
+    lineFactorSlider.value = preferences.lineFactor;
+    spaceFactorSlider.value = preferences.spaceFactor;
+    pageMarginSlider.value = preferences.pageMargin;
+    pageNumberSizeSlider.value = preferences.pageNumberSize;
+    pageNumberPosition.value = preferences.pageNumberPosition;
+    pageNumbersToggle.setAttribute('data-toggled', String(Boolean(preferences.pageNumbers)));
+    pageNumbersToggle.setAttribute('aria-checked', String(Boolean(preferences.pageNumbers)));
+    setColorMode(preferences.colorMode, false);
+    fontFactorDisplay.textContent = Number(fontFactorSlider.value).toFixed(2) + 'x';
+    lineFactorDisplay.textContent = Number(lineFactorSlider.value).toFixed(2) + 'x';
+    spaceFactorDisplay.textContent = Number(spaceFactorSlider.value).toFixed(2) + 'x';
+    previewContent.style.setProperty('--preview-font', fontSelector.value);
+    previewContent.style.setProperty('--font-factor', fontFactorSlider.value);
+    previewContent.style.setProperty('--line-factor', lineFactorSlider.value);
+    previewContent.style.setProperty('--space-factor', spaceFactorSlider.value);
+    Array.from(previewContent.classList).forEach((className) => {
+        if (className.startsWith('prose-dense_')) previewContent.classList.remove(className);
+    });
+    previewContent.classList.add(themeSelector.value);
+    updatePageNumberCSS();
 
     // Render logic powered by enhanced first-principles engine
     const renderMarkdown = () => {
         try {
+            let renderedHtml = '';
             if (window.MDParser && window.MDParser.renderMarkdownEnhanced) {
-                previewContent.innerHTML = window.MDParser.renderMarkdownEnhanced(
+                renderedHtml = window.MDParser.renderMarkdownEnhanced(
                     markdownInput.value,
                     md
                 );
-                window.MDParser.fitMathToContainer(previewContent);
             } else {
-                previewContent.innerHTML = md.render(markdownInput.value);
+                renderedHtml = md.render(markdownInput.value);
+            }
+
+            // Post-process task list checkmarks: - [x] and - [ ]
+            renderedHtml = renderedHtml.replace(
+                /<li([^>]*)>(\s*(?:<p>)?\s*)\[([ xX])\]\s*/gi,
+                (match, attrs, prefix, check) => {
+                    const isChecked = check.toLowerCase() === 'x';
+                    const checkedClass = isChecked ? 'task-checked' : 'task-unchecked';
+                    const icon = isChecked
+                        ? '<span class="task-list-checkbox checked" aria-label="Completed">&#x2713;</span>'
+                        : '<span class="task-list-checkbox unchecked" aria-label="Not completed"></span>';
+                    let newAttrs = attrs;
+                    if (/class=["']/i.test(newAttrs)) {
+                        newAttrs = newAttrs.replace(/class=["']([^"']*)["']/i, `class="$1 task-list-item ${checkedClass}"`);
+                    } else {
+                        newAttrs = `${newAttrs} class="task-list-item ${checkedClass}"`;
+                    }
+                    return `<li${newAttrs}>${prefix}${icon} `;
+                }
+            );
+
+            previewContent.innerHTML = renderedHtml;
+
+            // Mark parent lists for styling
+            previewContent.querySelectorAll('.task-list-item').forEach(li => {
+                const parent = li.parentElement;
+                if (parent && (parent.tagName === 'UL' || parent.tagName === 'OL')) {
+                    parent.classList.add('task-list');
+                }
+            });
+
+            if (window.MDParser && window.MDParser.fitMathToContainer) {
+                window.MDParser.fitMathToContainer(previewContent);
             }
         } catch (e) {
             console.error('Render error:', e);
@@ -61,7 +225,10 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     // Live Event Listeners
-    markdownInput.addEventListener('input', renderMarkdown);
+    markdownInput.addEventListener('input', () => {
+        renderMarkdown();
+        persistPreferences();
+    });
 
     // Initial render
     renderMarkdown();
@@ -69,23 +236,15 @@ document.addEventListener('DOMContentLoaded', () => {
     // Theme selector change listener
     if (themeSelector) {
         themeSelector.addEventListener('change', (e) => {
-            // Remove all themes starting with prose-dense_
             const classes = Array.from(previewContent.classList);
-            classes.forEach(c => {
-                if (c.startsWith('prose-dense_')) {
-                    previewContent.classList.remove(c);
-                }
+            classes.forEach((className) => {
+                if (className.startsWith('prose-dense_')) previewContent.classList.remove(className);
             });
-            // Add new theme
             previewContent.classList.add(e.target.value);
-
-            // Handle dark background for midnight theme
-            const a4Container = previewContent.closest('.bg-white') || previewContent.parentElement;
-            if (e.target.value === 'prose-dense_midnight') {
-                a4Container.style.backgroundColor = '#0f172a';
-            } else {
-                a4Container.style.backgroundColor = '';
-            }
+            const a4Container = previewContent.parentElement;
+            a4Container.style.backgroundColor = e.target.value === 'prose-dense_midnight' ? '#0f172a' : '';
+            preferences.theme = e.target.value;
+            persistPreferences();
         });
     }
 
@@ -93,6 +252,9 @@ document.addEventListener('DOMContentLoaded', () => {
     if (fontSelector) {
         fontSelector.addEventListener('change', (e) => {
             previewContent.style.setProperty('--preview-font', e.target.value);
+            preferences.font = e.target.value;
+            updatePageNumberCSS();
+            persistPreferences();
         });
     }
 
@@ -102,6 +264,8 @@ document.addEventListener('DOMContentLoaded', () => {
             const factor = e.target.value;
             fontFactorDisplay.textContent = Number(factor).toFixed(2) + 'x';
             previewContent.style.setProperty('--font-factor', factor);
+            preferences.fontFactor = factor;
+            persistPreferences();
             if (window.MDParser) window.MDParser.fitMathToContainer(previewContent);
         });
     }
@@ -112,6 +276,8 @@ document.addEventListener('DOMContentLoaded', () => {
             const factor = e.target.value;
             lineFactorDisplay.textContent = Number(factor).toFixed(2) + 'x';
             previewContent.style.setProperty('--line-factor', factor);
+            preferences.lineFactor = factor;
+            persistPreferences();
             if (window.MDParser) window.MDParser.fitMathToContainer(previewContent);
         });
     }
@@ -122,34 +288,96 @@ document.addEventListener('DOMContentLoaded', () => {
             const factor = e.target.value;
             spaceFactorDisplay.textContent = Number(factor).toFixed(2) + 'x';
             previewContent.style.setProperty('--space-factor', factor);
+            preferences.spaceFactor = factor;
+            persistPreferences();
             if (window.MDParser) window.MDParser.fitMathToContainer(previewContent);
         });
     }
 
-    // Page numbers toggle
-    const pageNumbersToggle = document.getElementById('page-numbers-toggle');
-    const pageNumbersStyle = document.getElementById('page-numbers-css');
-    if (pageNumbersToggle && pageNumbersStyle) {
-        pageNumbersToggle.addEventListener('click', () => {
-            const isOn = pageNumbersToggle.getAttribute('data-toggled') === 'true';
-            const newState = !isOn;
-            pageNumbersToggle.setAttribute('data-toggled', String(newState));
-            pageNumbersToggle.setAttribute('aria-checked', String(newState));
-            pageNumbersStyle.disabled = !newState;
-            const knob = pageNumbersToggle.querySelector('span');
-            if (newState) {
-                knob.classList.add('translate-x-4');
-                knob.classList.remove('translate-x-0');
-                pageNumbersToggle.classList.add('bg-emerald-600');
-                pageNumbersToggle.classList.remove('bg-gray-300');
+    // Alignment control listener
+    const alignmentControl = document.getElementById('alignment-control');
+    const alignmentSelector = document.getElementById('alignment-selector');
+    const alignButtons = alignmentControl ? alignmentControl.querySelectorAll('.align-btn') : [];
+
+    const setAlignment = (align, persist = true) => {
+        previewContent.classList.remove('align-center', 'align-justify');
+        if (align === 'center') {
+            previewContent.classList.add('align-center');
+        } else if (align === 'justify') {
+            previewContent.classList.add('align-justify');
+        }
+
+        alignButtons.forEach(btn => {
+            const btnAlign = btn.getAttribute('data-align');
+            if (btnAlign === align) {
+                btn.classList.add('active', 'bg-emerald-600', 'text-white', 'shadow-sm');
+                btn.classList.remove('text-emerald-800', 'hover:bg-emerald-100/70');
             } else {
-                knob.classList.remove('translate-x-4');
-                knob.classList.add('translate-x-0');
-                pageNumbersToggle.classList.remove('bg-emerald-600');
-                pageNumbersToggle.classList.add('bg-gray-300');
+                btn.classList.remove('active', 'bg-emerald-600', 'text-white', 'shadow-sm');
+                btn.classList.add('text-emerald-800', 'hover:bg-emerald-100/70');
             }
         });
+
+        if (alignmentSelector && alignmentSelector.value !== align) {
+            alignmentSelector.value = align;
+        }
+        preferences.alignment = align;
+        if (persist) persistPreferences();
+        if (window.MDParser && window.MDParser.fitMathToContainer) {
+            window.MDParser.fitMathToContainer(previewContent);
+        }
+    };
+
+    if (alignmentControl) {
+        alignButtons.forEach(btn => {
+            btn.addEventListener('click', () => {
+                const align = btn.getAttribute('data-align') || 'left';
+                setAlignment(align);
+            });
+        });
     }
+
+    if (alignmentSelector) {
+        alignmentSelector.addEventListener('change', (e) => {
+            setAlignment(e.target.value);
+        });
+    }
+
+    // Persisted appearance and print controls.
+    setAlignment(preferences.alignment, false);
+
+    if (colorModeToggle) {
+        colorModeToggle.addEventListener('click', () => {
+            setColorMode(preferences.colorMode === 'dark' ? 'light' : 'dark');
+        });
+    }
+
+    pageNumbersToggle.addEventListener('click', () => {
+        const newState = pageNumbersToggle.getAttribute('data-toggled') !== 'true';
+        pageNumbersToggle.setAttribute('data-toggled', String(newState));
+        pageNumbersToggle.setAttribute('aria-checked', String(newState));
+        preferences.pageNumbers = newState;
+        updatePageNumberCSS();
+        persistPreferences();
+    });
+
+    pageMarginSlider.addEventListener('input', (e) => {
+        preferences.pageMargin = e.target.value;
+        updatePageNumberCSS();
+        persistPreferences();
+    });
+
+    pageNumberSizeSlider.addEventListener('input', (e) => {
+        preferences.pageNumberSize = e.target.value;
+        updatePageNumberCSS();
+        persistPreferences();
+    });
+
+    pageNumberPosition.addEventListener('change', (e) => {
+        preferences.pageNumberPosition = e.target.value;
+        updatePageNumberCSS();
+        persistPreferences();
+    });
 
     // ---- Print handler: beforeprint/afterprint for reliable print control ----
     // CSS @media print alone is unreliable because Tailwind CDN injects generated

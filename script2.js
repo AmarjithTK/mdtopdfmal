@@ -26,15 +26,17 @@
    */
   function looksLikeLatex(str) {
     if (!str || typeof str !== 'string') return false;
-    // LaTeX command: \frac, \sqrt, \alpha, etc.
+    // LaTeX command: \frac, \sqrt, \alpha, \checkmark, etc.
     if (/\\[a-zA-Z]+/.test(str)) return true;
     // Standard Unicode math symbols
-    if (/[∫∑√π∞≤≥Δ∀∃∈∋∩∪⊂⊃∇∂ℝℕℂℚℤ∧∨⇒⇔⊗⊕±×÷≠≈≡∝λμβθαγδεζηθικστυφχψωΩ]/.test(str)) return true;
+    if (/[∫∑√π∞≤≥Δ∀∃∈∋∩∪⊂⊃∇∂ℝℕℂℚℤ∧∨⇒⇔⊗⊕±×÷≠≈≡∝λμβθαγδεζηθικστυφχψωΩ∓°✓✔]/.test(str)) return true;
     // Variables with subscripts/superscripts and operators: x_1 = y_2, a^2 + b^2 = c^2
     if (/[a-zA-Z]_[0-9a-zA-Z]/.test(str) && /[=+\-*/<>]/.test(str)) return true;
     if (/[a-zA-Z]\^[0-9a-zA-Z]/.test(str) && /[=+\-*/<>]/.test(str)) return true;
     // Math function names combined with math operators/subscripts
     if (/\b(?:lim|sin|cos|tan|cot|sec|csc|log|ln|det|exp|max|min)\b/i.test(str) && /[=+\-*/_^{}]/.test(str)) return true;
+    // Plain equation expressions like x + y = 10
+    if (/^[a-zA-Z0-9\s()+\-*/.,]+=[a-zA-Z0-9\s()+\-*/.,]+$/.test(str.trim())) return true;
     return false;
   }
 
@@ -68,12 +70,317 @@
     return hasMathOperator && (hasMathSymbol || /[\^_{}]/.test(stripped)) && words.length === 0;
   }
 
+  // ─────────────────────────────────────────────────────────────
+  // 1b. LLM LaTeX Sanitization & Recovery Helpers
+  // ─────────────────────────────────────────────────────────────
+
+  /**
+   * Mask text and chemistry blocks (\text{...}, \mathrm{...}, \ce{...}) so their contents
+   * are never modified by math operator substitutions or function backslashers.
+   */
+  function maskProtectedBlocks(str) {
+    const tokens = [];
+    const textCommands = ['text', 'mathrm', 'operatorname', 'mbox', 'ce', 'tag', 'label'];
+    const pattern = new RegExp('\\\\(' + textCommands.join('|') + ')\\s*\\{', 'g');
+    let result = '';
+    let lastIndex = 0;
+    let match;
+
+    while ((match = pattern.exec(str)) !== null) {
+      const start = match.index;
+      const braceStart = match.index + match[0].length - 1;
+      let depth = 1;
+      let i = braceStart + 1;
+      while (i < str.length && depth > 0) {
+        if (str[i] === '{' && str[i - 1] !== '\\') depth++;
+        else if (str[i] === '}' && str[i - 1] !== '\\') depth--;
+        i++;
+      }
+      if (depth === 0) {
+        result += str.slice(lastIndex, start);
+        const token = `\uE002TEXT${tokens.length}\uE003`;
+        tokens.push(str.slice(start, i));
+        result += token;
+        lastIndex = i;
+        pattern.lastIndex = i;
+      }
+    }
+    result += str.slice(lastIndex);
+    return { masked: result, tokens };
+  }
+
+  function unmaskProtectedBlocks(str, tokens) {
+    return str.replace(/\uE002TEXT(\d+)\uE003/g, (m, idx) => tokens[Number(idx)] || m);
+  }
+
+  /**
+   * Clean common LLM equation divider lines (===== or -----).
+   */
+  function cleanDividers(str) {
+    // Dividers preceded or followed by \\: remove redundant divider line
+    str = str.replace(/(\\\\\s*)\n[ \t]*[=\-_~*]{3,}[ \t]*(\n|$)/g, '$1\n');
+    str = str.replace(/(^|\n)[ \t]*[=\-_~*]{3,}[ \t]*\n(\s*\\\\)/g, '$1$2');
+    // Standalone divider lines between content: convert to \\
+    str = str.replace(/(^|\n)[ \t]*[=\-_~*]{3,}[ \t]*(?=\n|$)/g, '$1\\\\');
+    // Clean duplicate \\\\
+    str = str.replace(/\\\\\s*\\\\/g, '\\\\');
+    return str;
+  }
+
+  /**
+   * Auto-inject missing column specifier on \begin{array} (e.g. \begin{array} -> \begin{array}{cc}).
+   */
+  function fixArrayColSpec(str) {
+    // Strip invalid optional [t], [b], [c] from \begin{array} which break KaTeX
+    str = str.replace(/\\begin\{array\}\s*\[[tblc]\]/g, '\\begin{array}');
+    return str.replace(/\\begin\{array\}(\s*)(?!\{)/g, (match, opt, offset, full) => {
+      const rest = full.slice(offset + match.length);
+      const endIdx = rest.indexOf('\\end{array}');
+      const body = endIdx !== -1 ? rest.slice(0, endIdx) : rest;
+      const rows = body.split(/(?:\\\\|\n)/);
+      let maxAmp = 0;
+      for (const r of rows) {
+        const amps = (r.match(/&/g) || []).length;
+        if (amps > maxAmp) maxAmp = amps;
+      }
+      const cols = 'c'.repeat(Math.max(1, maxAmp + 1));
+      return '\\begin{array} {' + cols + '}';
+    });
+  }
+
+  /**
+   * Convert legacy LaTeX font & style commands: {\bf ...}, {\rm ...}, \bold{...}, \boldsymbol{...}
+   */
+  function replaceLegacyFonts(str) {
+    const fontMap = {
+      bf: 'mathbf',
+      rm: 'mathrm',
+      it: 'mathit',
+      cal: 'mathcal'
+    };
+
+    // Convert {\bf ...}, {\rm ...}, etc. with balanced braces
+    for (const [cmd, target] of Object.entries(fontMap)) {
+      let idx = 0;
+      const prefix = '{\\' + cmd;
+      while (true) {
+        const pos = str.indexOf(prefix, idx);
+        if (pos === -1) break;
+        const afterCmdChar = str[pos + prefix.length];
+        if (afterCmdChar && /[a-zA-Z]/.test(afterCmdChar)) {
+          idx = pos + 1;
+          continue;
+        }
+        let depth = 1;
+        let i = pos + prefix.length;
+        while (i < str.length && depth > 0) {
+          if (str[i] === '{' && str[i - 1] !== '\\') depth++;
+          else if (str[i] === '}' && str[i - 1] !== '\\') depth--;
+          i++;
+        }
+        if (depth === 0) {
+          const content = str.slice(pos + prefix.length, i - 1).trim();
+          str = str.slice(0, pos) + '\\' + target + '{' + content + '}' + str.slice(i);
+          idx = pos + target.length + 2 + content.length;
+        } else {
+          idx = pos + 1;
+        }
+      }
+    }
+
+    // Convert \bold{...} and \boldsymbol{...} -> \mathbf{...}
+    str = str
+      .replace(/\\bold(?=[^a-zA-Z]|$)/g, '\\mathbf')
+      .replace(/\\boldsymbol(?=[^a-zA-Z]|$)/g, '\\mathbf')
+      .replace(/\\bf\s*\{/g, '\\mathbf{')
+      .replace(/\\rm\s*\{/g, '\\mathrm{')
+      .replace(/\\it\s*\{/g, '\\mathit{')
+      .replace(/\\cal\s*\{/g, '\\mathcal{');
+
+    return str;
+  }
+
+  /**
+   * Safely add backslash to lazy math functions (sin, cos, tan, log, ln, exp, lim, etc.)
+   */
+  function addFunctionBackslashes(str) {
+    const fns = [
+      'arcsin', 'arccos', 'arctan',
+      'sinh', 'cosh', 'tanh',
+      'sin', 'cos', 'tan', 'cot', 'sec', 'csc',
+      'log', 'ln', 'exp', 'lim',
+      'det', 'gcd', 'deg', 'min', 'max'
+    ];
+    const pattern = new RegExp('(^|[^a-zA-Z\\\\])(' + fns.join('|') + ')(?=[\\(\\[\\{_ \\t\\n\\^]|\\\\)', 'g');
+    return str.replace(pattern, '$1\\$2');
+  }
+
+  /**
+   * Map Unicode operators, Greek symbols, dashes, and checkmarks into valid LaTeX syntax.
+   */
+  const GREEK_MATH_MAP = {
+    'α': '\\alpha ', 'β': '\\beta ', 'γ': '\\gamma ', 'δ': '\\delta ',
+    'ε': '\\epsilon ', 'ζ': '\\zeta ', 'η': '\\eta ', 'θ': '\\theta ',
+    'ι': '\\iota ', 'κ': '\\kappa ', 'λ': '\\lambda ', 'μ': '\\mu ',
+    'ν': '\\nu ', 'ξ': '\\xi ', 'π': '\\pi ', 'ρ': '\\rho ',
+    'σ': '\\sigma ', 'τ': '\\tau ', 'υ': '\\upsilon ', 'φ': '\\phi ',
+    'χ': '\\chi ', 'ψ': '\\psi ', 'ω': '\\omega ',
+    'Γ': '\\Gamma ', 'Δ': '\\Delta ', 'Θ': '\\Theta ', 'Λ': '\\Lambda ',
+    'Ξ': '\\Xi ', 'Π': '\\Pi ', 'Σ': '\\Sigma ', 'Υ': '\\Upsilon ',
+    'Φ': '\\Phi ', 'Ψ': '\\Psi ', 'Ω': '\\Omega '
+  };
+
+  function mapUnicodeMath(str) {
+    str = str
+      .replace(/×/g, '\\times ')
+      .replace(/÷/g, '\\div ')
+      .replace(/±/g, '\\pm ')
+      .replace(/∓/g, '\\mp ')
+      .replace(/≤/g, '\\le ')
+      .replace(/≥/g, '\\ge ')
+      .replace(/≠/g, '\\neq ')
+      .replace(/≈/g, '\\approx ')
+      .replace(/≡/g, '\\equiv ')
+      .replace(/∞/g, '\\infty ')
+      .replace(/\^?\{?°\}?/g, '^{\\circ}')
+      .replace(/[–—]/g, '-')
+      .replace(/[✓✔]/g, '\\checkmark ')
+      .replace(/\\tick\b/g, '\\checkmark');
+
+    str = str.replace(/[α-ωΑ-Ω]/g, (ch) => GREEK_MATH_MAP[ch] || ch);
+    str = str.replace(/(\\[a-zA-Z]+)\s+([_^])/g, '$1$2');
+    return str;
+  }
+
+  /**
+   * Parse the argument following ^ or _ (either a balanced {...} group or single token/macro).
+   */
+  function parseScriptArg(str, pos) {
+    if (pos >= str.length) return null;
+    if (str[pos] === '{') {
+      let depth = 1;
+      let i = pos + 1;
+      while (i < str.length && depth > 0) {
+        if (str[i] === '{' && str[i - 1] !== '\\') depth++;
+        else if (str[i] === '}' && str[i - 1] !== '\\') depth--;
+        i++;
+      }
+      return { raw: str.slice(pos, i), inner: str.slice(pos + 1, i - 1), end: i };
+    } else if (str[pos] === '\\') {
+      const m = str.slice(pos).match(/^(\\[a-zA-Z]+)/);
+      if (m) return { raw: m[1], inner: m[1], end: pos + m[1].length };
+      return { raw: str.slice(pos, pos + 2), inner: str.slice(pos, pos + 2), end: pos + 2 };
+    } else {
+      return { raw: str[pos], inner: str[pos], end: pos + 1 };
+    }
+  }
+
+  /**
+   * Prevent KaTeX Double Subscript / Superscript errors by merging chained scripts (e.g. x_a_b -> x_{a_b}).
+   */
+  function healDoubleSubSuper(str) {
+    let changed = true;
+    while (changed) {
+      changed = false;
+      for (let i = 0; i < str.length; i++) {
+        const ch = str[i];
+        if (ch === '_' || ch === '^') {
+          const arg1 = parseScriptArg(str, i + 1);
+          if (!arg1) continue;
+          const nextPos = arg1.end;
+          if (nextPos < str.length && str[nextPos] === ch) {
+            const arg2 = parseScriptArg(str, nextPos + 1);
+            if (!arg2) continue;
+            let combined;
+            if (ch === '_') {
+              combined = '_{' + arg1.inner + '_' + arg2.inner + '}';
+            } else {
+              combined = '^{' + arg1.inner + '^{' + arg2.inner + '}}';
+            }
+            str = str.slice(0, i) + combined + str.slice(arg2.end);
+            changed = true;
+            break;
+          }
+        }
+      }
+    }
+    return str;
+  }
+
+  /**
+   * Balance \left and \right delimiters within an individual row or cell segment.
+   */
+  function balanceSegment(segment) {
+    segment = segment
+      .replace(/(?<!\\)\\left\s*\{/g, '\\left\\{')
+      .replace(/(?<!\\)\\right\s*\}/g, '\\right\\}');
+
+    const leftMatches = segment.match(/(?:^|[^\\])(?:\\\\)*\\left(?![a-zA-Z])/g) || [];
+    const rightMatches = segment.match(/(?:^|[^\\])(?:\\\\)*\\right(?![a-zA-Z])/g) || [];
+    const diff = leftMatches.length - rightMatches.length;
+
+    if (diff > 0) {
+      segment = segment + ' \\right.'.repeat(diff);
+    } else if (diff < 0) {
+      segment = '\\left. '.repeat(-diff) + segment;
+    }
+    return segment;
+  }
+
+  /**
+   * Ensure every \left has a matching \right delimiter so KaTeX never throws unbalanced errors.
+   */
+  function balanceLeftRight(str) {
+    // Normalize unescaped braces after \left and \right first
+    str = str
+      .replace(/(?<!\\)\\left\s*\{/g, '\\left\\{')
+      .replace(/(?<!\\)\\right\s*\}/g, '\\right\\}');
+
+    // Tabular environments where delimiters cannot cross \\ or &
+    const tabularEnvs = /\\begin\{(aligned|align\*?|gather\*?|gathered|matrix|pmatrix|bmatrix|Bmatrix|vmatrix|Vmatrix|cases|dcases|rcases|array)\}([\s\S]*?)\\end\{\1\}/g;
+
+    str = str.replace(tabularEnvs, (match, env, body) => {
+      const rows = body.split(/\\\\/g);
+      const balancedRows = rows.map(row => {
+        const cells = row.split(/(?<!\\)&/g);
+        return cells.map(balanceSegment).join('&');
+      });
+      return '\\begin{' + env + '}' + balancedRows.join(' \\\\ ') + '\\end{' + env + '}';
+    });
+
+    // Balance remaining outer expression
+    const leftMatches = str.match(/(?:^|[^\\])(?:\\\\)*\\left(?![a-zA-Z])/g) || [];
+    const rightMatches = str.match(/(?:^|[^\\])(?:\\\\)*\\right(?![a-zA-Z])/g) || [];
+    const diff = leftMatches.length - rightMatches.length;
+
+    if (diff > 0) {
+      const endMatch = str.match(/(\\end\{[a-zA-Z*]+\}\s*)$/);
+      const rights = ' \\right.'.repeat(diff);
+      if (endMatch) {
+        str = str.slice(0, endMatch.index) + rights + ' ' + endMatch[0];
+      } else {
+        str = str + rights;
+      }
+    } else if (diff < 0) {
+      const beginMatch = str.match(/^(\s*\\begin\{[a-zA-Z*]+\}(?:\{[^{}]*\})?\s*)/);
+      const lefts = '\\left. '.repeat(-diff);
+      if (beginMatch) {
+        str = beginMatch[0] + lefts + str.slice(beginMatch[0].length);
+      } else {
+        str = lefts + str;
+      }
+    }
+    return str;
+  }
+
   /**
    * Sanitize LaTeX content inside math expressions before KaTeX processing.
+   * Automatically heals common ChatGPT, Claude, and LLM lazy LaTeX formatting errors.
    */
   function sanitizeMathContent(content) {
-    if (!content) return '';
-    return content
+    if (!content || typeof content !== 'string') return '';
+
+    let str = content
       // Normalize smart/curly quotes which break KaTeX
       .replace(/[\u2018\u2019]/g, "'")
       .replace(/[\u201c\u201d]/g, '"')
@@ -95,6 +402,36 @@
       .replace(/\\degree\b/g, '^{\\circ}')
       .replace(/\\angstrom\b/g, '\\text{Å}')
       .replace(/\\textregistered\b/g, '^{\\circledR}');
+
+    // 1. Remove / convert LLM divider lines (===== or -----)
+    str = cleanDividers(str);
+
+    // 2. Fix missing column specifier on \begin{array}
+    str = fixArrayColSpec(str);
+
+    // 3. Mask protected text, chemistry, and tags
+    const { masked, tokens } = maskProtectedBlocks(str);
+    str = masked;
+
+    // 4. Legacy LaTeX font & style commands
+    str = replaceLegacyFonts(str);
+
+    // 5. Missing backslashes on common math functions
+    str = addFunctionBackslashes(str);
+
+    // 6. Unicode operators & symbols
+    str = mapUnicodeMath(str);
+
+    // 7. Double sub/superscripts
+    str = healDoubleSubSuper(str);
+
+    // 8. Unmatched \left and \right
+    str = balanceLeftRight(str);
+
+    // 9. Restore protected text & chemistry blocks
+    str = unmaskProtectedBlocks(str, tokens);
+
+    return str;
   }
 
   // ─────────────────────────────────────────────────────────────
@@ -175,6 +512,17 @@
       const id = `\uE000MATH${mathBlocks.length}\uE001`;
       mathBlocks.push(`$$\n${mathContent}\n$$`);
       return `\n\n${id}\n\n`;
+    });
+
+    // 6b. Recover multi-line math formulas separated by LLM dividers (===== or -----)
+    text = text.replace(/(^|\n)([^\n$`]+[=<>≈≤≥≡][^\n$`]+)\n[ \t]*[=\-_~*]{3,}[ \t]*\n([^\n$`]+[=<>≈≤≥≡][^\n$`]+)(?=\n|$)/g, (match, prefix, line1, line2) => {
+      if (looksLikeLatex(line1) || looksLikeLatex(line2) || isStandaloneMathLine(line1) || isStandaloneMathLine(line2)) {
+        const id = `\uE000MATH${mathBlocks.length}\uE001`;
+        const content = `\\begin{aligned}\n${sanitizeMathContent(line1.trim())} \\\\\n${sanitizeMathContent(line2.trim())}\n\\end{aligned}`;
+        mathBlocks.push(`$$\n${content}\n$$`);
+        return `${prefix}\n\n${id}\n\n`;
+      }
+      return match;
     });
 
     // 7. Recover bare [latex] bracket blocks (common copy-paste artifact)
@@ -274,7 +622,7 @@
     // Display math $$...$$
     safeHtml = safeHtml.replace(/\$\$([\s\S]*?)\$\$/g, (match, content) => {
       try {
-        return window.katex.renderToString(content.trim(), { displayMode: true, throwOnError: false });
+        return window.katex.renderToString(sanitizeMathContent(content.trim()), { displayMode: true, throwOnError: false });
       } catch (e) {
         return match;
       }
@@ -284,7 +632,7 @@
     safeHtml = safeHtml.replace(/(^|[^\w\\$])\$([^\s$](?:[^$]*[^\s$])?)\$(?!\d)/g, (match, prefix, content) => {
       if (/^\d+(?:,\d{3})*(?:\.\d+)?$/.test(content)) return match;
       try {
-        const rendered = window.katex.renderToString(content.trim(), { displayMode: false, throwOnError: false });
+        const rendered = window.katex.renderToString(sanitizeMathContent(content.trim()), { displayMode: false, throwOnError: false });
         return prefix + rendered;
       } catch (e) {
         return match;
